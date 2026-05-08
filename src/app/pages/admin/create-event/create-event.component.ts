@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../../../services/event.service';
 import { QrService } from '../../../services/qr.service';
+import { LangSwitcherComponent } from "src/app/shared/lang-switcher/lang-switcher.component";
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-event',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LangSwitcherComponent, TranslateModule],
   templateUrl: './create-event.component.html',
   styleUrl: './create-event.component.css'
 })
@@ -26,13 +28,13 @@ export class CreateEventComponent {
 
   router: Router;
 
-  constructor(router: Router, private eventService: EventService, private qrService: QrService) {
+  constructor(router: Router, private eventService: EventService, private qrService: QrService, private translate: TranslateService) {
     this.router = router;
   }
 
   async createEvent() {
     if (!this.name || !this.date || !this.password) {
-      this.error.set('Veuillez remplir tous les champs obligatoires.');
+      this.error.set(this.translate.instant('CREATE_EVENET.ERROR_REQUIRED'));
       return;
     }
 
@@ -52,7 +54,7 @@ export class CreateEventComponent {
       this.eventUrl.set(url);
       this.qrDataUrl.set(qr);
     } catch (e) {
-      this.error.set('Erreur lors de la création. Réessayez.');
+      this.error.set(this.translate.instant('CREATE_EVENT.GENERIC'));
     } finally {
       this.loading.set(false);
     }

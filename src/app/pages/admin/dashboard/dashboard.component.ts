@@ -5,11 +5,13 @@ import { EventService } from '../../../services/event.service';
 import { AuthService } from '../../../services/auth.service';
 import { QrService } from '../../../services/qr.service';
 import { Event } from '../../../models/event.model';
+import { TranslateModule } from '@ngx-translate/core';
+import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule, LangSwitcherComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

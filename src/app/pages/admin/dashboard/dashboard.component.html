@@ -2,14 +2,14 @@
       <header>
         <div class="logo">
           <div class="dot"></div>
-          <span>Memshot</span>
+          <span>{{ 'APP_NAME' | translate }}</span>
         </div>
         <div class="header-actions">
           <button class="btn-new" (click)="router.navigate(['/admin/create-event'])">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 5v14M5 12h14"/>
             </svg>
-            Nouvel événement
+            {{ 'DASHBOARD.NEW_EVENT' | translate}}
           </button>
           <button class="btn-logout" (click)="logout()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -18,13 +18,16 @@
               <line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
           </button>
+          <div>
+            <app-lang-switcher></app-lang-switcher>
+          </div>
         </div>
       </header>
 
       <main>
         <div class="page-title">
-          <h1>Mes <em>événements</em></h1>
-          <span class="count">{{ events().length }} événement{{ events().length !== 1 ? 's' : '' }}</span>
+          <h1>{{ 'DASHBOARD.TITLE' | translate }} <em> {{ 'DASHBOARD.TITLE_EM' | translate }}</em></h1>
+          <span class="count">{{ events().length }} {{ 'DASHBOARD.EVENTS_COUNT' | translate }}{{ events().length !== 1 ? 's' : '' }}</span>
         </div>
 
         <div class="loading" *ngIf="loading()">
@@ -40,9 +43,9 @@
               <circle cx="30" cy="20" r="2" fill="currentColor"/>
             </svg>
           </div>
-          <p>Aucun événement pour l'instant</p>
+          <p>{{ 'DASHBOARD.EMPTY_TEXT' | translate }}</p>
           <button class="btn-create-first" (click)="router.navigate(['/admin/create-event'])">
-            Créer votre premier événement
+            {{ 'DASHBOARD.CREATE_FIRST' | translate }}
           </button>
         </div>
 
@@ -51,13 +54,13 @@
             <div class="event-card-inner" (click)="openEvent(event)">
               <div class="event-meta">
                 <span class="event-date">{{ toDate(event.date) | date: 'dd MMM yyyy' }}</span>
-                <span class="event-count">{{ event.photoCount }} photo{{ event.photoCount !== 1 ? 's' : '' }}</span>
+                <span class="event-count">{{ event.photoCount }} {{'DASHBOARD.PHOTO_COUNT' | translate}}{{ event.photoCount !== 1 ? 's' : '' }}</span>
               </div>
               <h3>{{ event.name }}</h3>
               <p *ngIf="event.description" class="event-desc">{{ event.description }}</p>
             </div>
             <div class="event-footer">
-              <span class="event-id">ID: {{ event.id.slice(0,8) }}…</span>
+              <span class="event-id">ID: {{ event.id }}</span>
               <div class="event-actions">
                 <button class="btn-qr" (click)="showQr(event, $event)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -65,7 +68,7 @@
                     <rect x="3" y="14" width="7" height="7"/>
                     <path d="M14 14h1v1h-1zM18 14h3v1h-3zM14 18h1v3h-1zM16 16h2v2h-2zM19 17h2v4h-2zM17 19h1v2h-1z"/>
                   </svg>
-                  QR code
+                  {{ 'DASHBOARD.QR_CODE' | translate }}
                 </button>
                 <button class="btn-arrow" (click)="openEvent(event)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -102,15 +105,15 @@
 
           <div class="modal-info">
             <div class="info-row">
-              <span class="info-label">Mot de passe participants</span>
+              <span class="info-label">{{'DASHBOARD.PARTICIPANT_PASSWORD' | translate}}</span>
               <span class="info-value pw">{{ qrModal()!.event.password }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Lien direct</span>
+              <span class="info-label">{{'DASHBOARD.DIRECT_LINK' | translate}}</span>
               <div class="url-row">
                 <span class="info-value url">{{ getEventUrl(qrModal()!.event.id) }}</span>
                 <button class="btn-copy" (click)="copyUrl(qrModal()!.event.id)">
-                  {{ copied() ? '✓' : 'Copier' }}
+                  {{ copied() ? '✓' : 'DASHBOARD.COPY' | translate }}
                 </button>
               </div>
             </div>
@@ -122,7 +125,7 @@
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            Télécharger le QR code
+            {{ 'DASHBOARD.DOWNLOAD_QR' | translate }}
           </button>
         </div>
       </div>

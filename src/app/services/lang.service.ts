@@ -12,10 +12,13 @@ export class LangService {
     this.currentLang.set(lang);
   }
 
+  setLang(lang: 'fr' | 'en') {
+    this.translate.use(lang);
+    this.currentLang.set(lang);
+    localStorage.setItem('lang', lang);
+  }
+
   toggle() {
-    const next = this.currentLang() === 'fr' ? 'en' : 'fr';
-    this.translate.use(next);
-    this.currentLang.set(next);
-    localStorage.setItem('lang', next);
+    this.setLang(this.currentLang() === 'fr' ? 'en' : 'fr');
   }
 }

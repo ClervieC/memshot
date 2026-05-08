@@ -5,38 +5,41 @@
             <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
         </button>
-        <span class="header-title">Nouvel événement</span>
+        <span class="header-title">{{'CREATE_EVENT.HEADER' | translate }}</span>
+        <div class="lang">
+            <app-lang-switcher></app-lang-switcher>
+          </div>
       </header>
 
       <main *ngIf="!createdEventId()">
-        <h1>Créer un<br><em>événement</em></h1>
+        <h1>{{'CREATE_EVENT.TITLE' | translate }}<br><em>{{ 'CREATE_EVENT.TITLE_EM' | translate }}</em></h1>
 
         <div class="form">
           <div class="field">
-            <label>Nom de l'événement *</label>
-            <input type="text" [(ngModel)]="name" placeholder="Mariage de Sophie & Pierre" />
+            <label>{{'CREATE_EVENT.NAME_LABEL' | translate }} *</label>
+            <input type="text" [(ngModel)]="name" placeholder="{{ 'CREATE_EVENT.NAME_PLACEHOLDER' | translate }}" />
           </div>
 
           <div class="field">
-            <label>Description</label>
-            <textarea [(ngModel)]="description" placeholder="Une brève description..."></textarea>
+            <label>{{'CREATE_EVENT.DESC_LABEL' | translate }}</label>
+            <textarea [(ngModel)]="description" placeholder="{{ 'CREATE_EVENT.DESC_PLACEHOLDER' | translate }}"></textarea>
           </div>
 
           <div class="field">
-            <label>Date *</label>
+            <label>{{'CREATE_EVENT.DATE_LABEL' | translate }} *</label>
             <input type="date" [(ngModel)]="date" />
           </div>
 
           <div class="field">
-            <label>Mot de passe participants *</label>
-            <input type="text" [(ngModel)]="password" placeholder="ex: mariage2024" />
-            <span class="field-hint">Les invités devront entrer ce mot de passe</span>
+            <label>{{'CREATE_EVENT.PASSWORD_LABEL' | translate }} *</label>
+            <input type="text" [(ngModel)]="password" placeholder="{{ 'CREATE_EVENT.PASSWORD_PLACEHOLDER' | translate }}" />
+            <span class="field-hint">{{'CREATE_EVENT.PASSWORD_HINT' | translate }}</span>
           </div>
 
           <div class="error" *ngIf="error()">{{ error() }}</div>
 
           <button class="btn-create" (click)="createEvent()" [disabled]="loading()">
-            <span *ngIf="!loading()">Créer l'événement</span>
+            <span *ngIf="!loading()">{{ 'CREATE_EVENT.CREATE_BTN' | translate }}</span>
             <span *ngIf="loading()" class="spinner"></span>
           </button>
         </div>
@@ -48,11 +51,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
-          Événement créé !
+          {{ 'CREATE_EVENT.SUCCESS_BADGE' | translate }}
         </div>
 
-        <h1>Votre QR<br><em>code</em></h1>
-        <p class="qr-hint">Affichez-le lors de l'événement pour que vos invités puissent prendre des photos</p>
+        <h1>{{ 'CREATE_EVENT.QR_TITLE' | translate }}<br><em>{{ 'CREATE_EVENT.QR_TITLE_EM' | translate }}</em></h1>
+        <p class="qr-hint">{{ 'CREATE_EVENT.QR_HINT' | translate }}</p>
 
         <div class="qr-container">
           <img [src]="qrDataUrl()" alt="QR Code" class="qr-img" />
@@ -60,11 +63,11 @@
         </div>
 
         <div class="event-url">
-          <span class="url-label">URL directe</span>
+          <span class="url-label">{{ 'CREATE_EVENT.URL_LABEL' | translate }}</span>
           <div class="url-box">
             <span>{{ eventUrl() }}</span>
             <button (click)="copyUrl()">
-              {{ copied() ? '✓' : 'Copier' }}
+              {{ copied() ? '✓' : ('CREATE_EVENT.COPY_BTN' | translate) }}
             </button>
           </div>
         </div>
@@ -76,10 +79,10 @@
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            Télécharger le QR code
+            {{ 'CREATE_EVENT.DOWNLOAD_QR' | translate }}
           </button>
           <button class="btn-dashboard" (click)="router.navigate(['/admin/dashboard'])">
-            Aller au tableau de bord
+            {{ 'CREATE_EVENT.GO_DASHBOARD' | translate }}
           </button>
         </div>
       </div>

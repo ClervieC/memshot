@@ -8,32 +8,35 @@
       <div class="form-wrap">
         <div class="brand">
           <div class="dot"></div>
-          <span>Memshot</span>
+          <span>{{ 'APP_NAME' | translate }}</span>
         </div>
 
-        <h2>Connexion<br><em>organisateur</em></h2>
+        <h2>{{ 'LOGIN.TITLE' | translate }}<br><em>{{ 'LOGIN.TITLE_EM' | translate }}</em></h2>
 
         <div class="tabs">
-          <button [class.active]="mode() === 'login'" (click)="mode.set('login')">Connexion</button>
-          <button [class.active]="mode() === 'register'" (click)="mode.set('register')">Créer un compte</button>
+          <button [class.active]="mode() === 'login'" (click)="mode.set('login')">{{ 'LOGIN.TAB_LOGIN' | translate }}</button>
+          <button [class.active]="mode() === 'register'" (click)="mode.set('register')">{{ 'LOGIN.TAB_REGISTER' | translate }}</button>
         </div>
 
         <div class="form">
           <div class="field">
-            <label>Email</label>
-            <input type="email" [(ngModel)]="email" placeholder="vous@example.com" />
+            <label>{{ 'LOGIN.EMAIL' | translate }}*</label>
+            <input type="email" [(ngModel)]="email" placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}" />
           </div>
           <div class="field">
-            <label>Mot de passe</label>
-            <input type="password" [(ngModel)]="password" placeholder="••••••••" />
+            <label>{{ 'LOGIN.PASSWORD' | translate }}*</label>
+            <input type="password" [(ngModel)]="password" placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}" />
           </div>
 
           <div class="error" *ngIf="error()">{{ error() }}</div>
 
           <button class="btn-submit" (click)="submit()" [disabled]="loading()">
-            <span *ngIf="!loading()">{{ mode() === 'login' ? 'Se connecter' : 'Créer le compte' }}</span>
+            <span *ngIf="!loading()">{{ mode() === 'login' ? ('LOGIN.SUBMIT_LOGIN' | translate) : ('LOGIN.SUBMIT_REGISTER' | translate) }}</span>
             <span *ngIf="loading()" class="spinner"></span>
           </button>
         </div>
       </div>
+      <div style="position:fixed;top:1rem;right:1rem;">
+            <app-lang-switcher></app-lang-switcher>
+        </div>
     </div>

@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LangSwitcherComponent } from "src/app/shared/lang-switcher/lang-switcher.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule, LangSwitcherComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -18,11 +20,11 @@ export class LoginComponent {
   loading = signal(false);
   error = signal('');
 
-  constructor(public router: Router, private authService: AuthService) {}
+  constructor(public router: Router, private authService: AuthService, private translate: TranslateService) {}
 
   async submit() {
     if (!this.email || !this.password) {
-      this.error.set('Veuillez remplir tous les champs.');
+      this.error.set(this.translate.instant('LOGIN.ERROR_EMPTY'));
       return;
     }
 
@@ -37,10 +39,10 @@ export class LoginComponent {
       }
       this.router.navigate(['/admin/dashboard']);
     } catch (e: any) {
-      const msg = e.code === 'auth/invalid-credential' ? 'Email ou mot de passe incorrect.' :
-                  e.code === 'auth/email-already-in-use' ? 'Cet email est déjà utilisé.' :
-                  e.code === 'auth/weak-password' ? 'Mot de passe trop faible (6 caractères min).' :
-                  'Une erreur est survenue.';
+      const msg = e.code === 'auth/invalid-credential' ? this.translate.instant('LOGIN.ERROR_INVALID_CREDENTIAL') :
+                  e.code === 'auth/email-already-in-use' ? this.translate.instant('LOGIN.ERROR_EMAIL_ALREADY_IN_USE') :
+                  e.code === 'auth/weak-password' ? this.translate.instant('LOGIN.ERROR_WEAK_PASSWORD') :
+                  this.translate.instant('LOGIN.ERROR_UNKNOWN');
       this.error.set(msg);
     } finally {
       this.loading.set(false);
