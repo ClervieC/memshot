@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
+
+    :host { display: block; height: 100vh; overflow: hidden; background: #000; color: #fff; font-family: 'DM Sans', sans-serif; }
+
+    .camera-page { height: 100vh; position: relative; }
+
+    .camera-view, .preview-view { height: 100vh; position: relative; overflow: hidden; }
+
+    .video-feed {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .video-feed.mirror { transform: scaleX(-1); }
+
+    .camera-top, .preview-top {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+    }
+
+    .camera-title { font-size: 0.9rem; font-weight: 500; text-shadow: 0 1px 4px rgba(0,0,0,0.5); flex: 1; text-align: center; }
+
+    .icon-btn {
+      width: 40px; height: 40px;
+      background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: white; cursor: pointer; transition: background 0.2s; border: none;
+    }
+    .icon-btn:hover { background: rgba(0,0,0,0.6); }
+    .icon-btn svg { width: 18px; height: 18px; }
+
+    .camera-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2rem 2rem 3rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      display: flex; align-items: center; justify-content: center;
+      gap: 2.5rem;
+    }
+
+    .capture-btn {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      border: 3px solid white;
+      background: rgba(255,255,255,0.15);
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .capture-btn:active { transform: scale(0.92); }
+
+    .capture-inner {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .upload-label {
+      display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+      color: rgba(255,255,255,0.8); font-size: 0.75rem; cursor: pointer;
+    }
+    .upload-label svg { width: 28px; height: 28px; }
+
+    .no-camera, .uploading-view, .success-view {
+      height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem; text-align: center; gap: 1rem;
+    }
+
+    .no-camera svg { width: 64px; height: 64px; color: rgba(255,255,255,0.3); margin-bottom: 0.5rem; }
+    .no-camera h3 { margin: 0; font-weight: 400; }
+    .no-camera p { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin: 0; }
+
+    .btn-gallery {
+      background: white; color: #000;
+      padding: 0.875rem 1.75rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; margin-top: 0.5rem;
+    }
+
+    .preview-img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    .preview-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.5rem 1.5rem 3rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+
+    .name-field input {
+      width: 100%; background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.25); border-radius: 10px;
+      padding: 0.75rem 1rem; color: white;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none;
+      box-sizing: border-box;
+    }
+    .name-field input::placeholder { color: rgba(255,255,255,0.35); }
+
+    .btn-send {
+      display: flex; align-items: center; justify-content: center; gap: 0.625rem;
+      width: 100%; background: white; color: #000;
+      border: none; padding: 1rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-send:hover { transform: translateY(-1px); }
+    .btn-send svg { width: 16px; height: 16px; }
+
+    .upload-anim {
+      position: relative; width: 80px; height: 80px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .upload-ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+    .upload-anim svg { width: 28px; height: 28px; color: rgba(255,255,255,0.7); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .uploading-view p { color: rgba(255,255,255,0.5); margin: 0; }
+
+    .success-anim svg { width: 72px; height: 72px; }
+    .success-view h2 { margin: 0; font-weight: 400; font-size: 1.5rem; }
+    .success-view p { color: rgba(255,255,255,0.5); margin: 0; font-size: 0.9rem; }
+
+    .success-actions { display: flex; flex-direction: column; gap: 0.75rem; width: 100%; max-width: 300px; margin-top: 0.5rem; }
+
+    .btn-another {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: white; color: #000; border: none;
+      padding: 1rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    }
+    .btn-another svg { width: 16px; height: 16px; }
+
+    .btn-gallery-link {
+      background: none; border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.75); padding: 1rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer;
+    }

@@ -1,0 +1,86 @@
+<div class="create-page">
+      <header>
+        <button class="back" (click)="router.navigate(['/admin/dashboard'])">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
+          </svg>
+        </button>
+        <span class="header-title">Nouvel événement</span>
+      </header>
+
+      <main *ngIf="!createdEventId()">
+        <h1>Créer un<br><em>événement</em></h1>
+
+        <div class="form">
+          <div class="field">
+            <label>Nom de l'événement *</label>
+            <input type="text" [(ngModel)]="name" placeholder="Mariage de Sophie & Pierre" />
+          </div>
+
+          <div class="field">
+            <label>Description</label>
+            <textarea [(ngModel)]="description" placeholder="Une brève description..."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Date *</label>
+            <input type="date" [(ngModel)]="date" />
+          </div>
+
+          <div class="field">
+            <label>Mot de passe participants *</label>
+            <input type="text" [(ngModel)]="password" placeholder="ex: mariage2024" />
+            <span class="field-hint">Les invités devront entrer ce mot de passe</span>
+          </div>
+
+          <div class="error" *ngIf="error()">{{ error() }}</div>
+
+          <button class="btn-create" (click)="createEvent()" [disabled]="loading()">
+            <span *ngIf="!loading()">Créer l'événement</span>
+            <span *ngIf="loading()" class="spinner"></span>
+          </button>
+        </div>
+      </main>
+
+      <!-- QR Code Result -->
+      <div class="qr-result" *ngIf="createdEventId()">
+        <div class="success-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Événement créé !
+        </div>
+
+        <h1>Votre QR<br><em>code</em></h1>
+        <p class="qr-hint">Affichez-le lors de l'événement pour que vos invités puissent prendre des photos</p>
+
+        <div class="qr-container">
+          <img [src]="qrDataUrl()" alt="QR Code" class="qr-img" />
+          <div class="qr-event-name">{{ name }}</div>
+        </div>
+
+        <div class="event-url">
+          <span class="url-label">URL directe</span>
+          <div class="url-box">
+            <span>{{ eventUrl() }}</span>
+            <button (click)="copyUrl()">
+              {{ copied() ? '✓' : 'Copier' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="qr-actions">
+          <button class="btn-download" (click)="downloadQR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Télécharger le QR code
+          </button>
+          <button class="btn-dashboard" (click)="router.navigate(['/admin/dashboard'])">
+            Aller au tableau de bord
+          </button>
+        </div>
+      </div>
+    </div>

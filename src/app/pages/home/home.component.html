@@ -1,0 +1,62 @@
+<div class="home">
+      <div class="bg-shapes">
+        <div class="shape s1"></div>
+        <div class="shape s2"></div>
+        <div class="shape s3"></div>
+      </div>
+
+      <div class="content">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
+              <circle cx="20" cy="20" r="8" fill="currentColor"/>
+              <path d="M14 8 L20 2 L26 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span>Memshot</span>
+        </div>
+
+        <h1>Capturez<br><em>l'instant</em></h1>
+        <p class="subtitle">Entrez le code de votre événement<br>pour accéder aux photos</p>
+
+        <div class="code-form">
+          <div class="input-wrap" [class.error]="error()">
+            <input
+              type="text"
+              [(ngModel)]="code"
+              placeholder="Code de l'événement"
+              (keyup.enter)="joinEvent()"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
+          <p class="error-msg" *ngIf="error()">{{ error() }}</p>
+
+          <button class="btn-join" (click)="joinEvent()" [disabled]="loading()">
+            <span *ngIf="!loading()">
+              Rejoindre
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+            <span *ngIf="loading()" class="spinner"></span>
+          </button>
+        </div>
+
+        <div class="divider">
+          <span>ou</span>
+        </div>
+
+        <button class="btn-secondary" (click)="goToAdmin()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          Espace organisateur
+        </button>
+      </div>
+    </div>

@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+    :host {
+      display: block; min-height: 100vh;
+      background: #0d0d0d; color: #f0ede8;
+      font-family: 'DM Sans', sans-serif; overflow: hidden;
+    }
+
+    .home {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; padding: 2.5rem 2rem; position: relative;
+    }
+
+    .bg-shapes { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .shape { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.12; }
+    .s1 { width: 400px; height: 400px; background: #e8d5c4; top: -100px; right: -100px; animation: drift 8s ease-in-out infinite; }
+    .s2 { width: 300px; height: 300px; background: #c4d4e8; bottom: -50px; left: -80px; animation: drift 10s ease-in-out infinite reverse; }
+    .s3 { width: 200px; height: 200px; background: #e8c4c4; top: 50%; left: 50%; animation: drift 12s ease-in-out infinite; }
+    @keyframes drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, -20px); } }
+
+    .content { position: relative; z-index: 1; max-width: 360px; width: 100%; }
+
+    .logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 2.5rem; color: #f0ede8;
+      font-size: 1.2rem; font-weight: 500; letter-spacing: 0.05em;
+    }
+    .logo-icon { width: 32px; height: 32px; color: #e8d5c4; }
+
+    h1 {
+      font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 300;
+      line-height: 1.1; margin: 0 0 0.75rem; letter-spacing: -0.02em;
+    }
+    h1 em { font-style: italic; color: #e8d5c4; }
+
+    .subtitle {
+      color: rgba(240, 237, 232, 0.45); font-size: 0.9rem;
+      line-height: 1.6; margin: 0 0 2rem;
+    }
+
+    .code-form { display: flex; flex-direction: column; gap: 0.625rem; }
+
+    .input-wrap {
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px; overflow: hidden;
+      transition: border-color 0.2s;
+      background: rgba(255,255,255,0.04);
+    }
+    .input-wrap:focus-within { border-color: rgba(232,213,196,0.5); }
+    .input-wrap.error { border-color: rgba(232,100,100,0.5); }
+
+    input {
+      width: 100%; background: transparent; border: none;
+      padding: 1rem 1.25rem; color: #f0ede8;
+      font-family: 'DM Sans', sans-serif; font-size: 1rem;
+      outline: none; letter-spacing: 0.05em;
+    }
+    input::placeholder { color: rgba(240,237,232,0.2); letter-spacing: 0; }
+
+    .error-msg { font-size: 0.8rem; color: #f0a0a0; margin: 0; padding: 0 0.25rem; }
+
+    .btn-join {
+      display: flex; align-items: center; justify-content: center; gap: 0.625rem;
+      background: #f0ede8; color: #0d0d0d; border: none;
+      padding: 1rem 1.5rem; border-radius: 14px;
+      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; min-height: 54px;
+    }
+    .btn-join:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(240,237,232,0.2); }
+    .btn-join:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-join svg { width: 18px; height: 18px; }
+
+    .spinner {
+      width: 20px; height: 20px; border: 2px solid rgba(13,13,13,0.3);
+      border-top-color: #0d0d0d; border-radius: 50%;
+      animation: spin 0.6s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 1.5rem 0; color: rgba(240,237,232,0.2); font-size: 0.8rem;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08);
+    }
+
+    .btn-secondary {
+      display: flex; align-items: center; justify-content: center; gap: 0.625rem;
+      background: transparent; border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(240,237,232,0.6); padding: 0.875rem 1.5rem; border-radius: 14px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.04); color: #f0ede8; border-color: rgba(255,255,255,0.2); }
+    .btn-secondary svg { width: 16px; height: 16px; }
+
+    @media (min-width: 768px) {
+      .home { padding: 3rem; align-items: center; }
+      h1 { font-size: 3.5rem; }
+    }

@@ -1,0 +1,39 @@
+<div class="login-page">
+      <div class="back" (click)="router.navigate(['/'])">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+      </div>
+
+      <div class="form-wrap">
+        <div class="brand">
+          <div class="dot"></div>
+          <span>Memshot</span>
+        </div>
+
+        <h2>Connexion<br><em>organisateur</em></h2>
+
+        <div class="tabs">
+          <button [class.active]="mode() === 'login'" (click)="mode.set('login')">Connexion</button>
+          <button [class.active]="mode() === 'register'" (click)="mode.set('register')">Créer un compte</button>
+        </div>
+
+        <div class="form">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="email" placeholder="vous@example.com" />
+          </div>
+          <div class="field">
+            <label>Mot de passe</label>
+            <input type="password" [(ngModel)]="password" placeholder="••••••••" />
+          </div>
+
+          <div class="error" *ngIf="error()">{{ error() }}</div>
+
+          <button class="btn-submit" (click)="submit()" [disabled]="loading()">
+            <span *ngIf="!loading()">{{ mode() === 'login' ? 'Se connecter' : 'Créer le compte' }}</span>
+            <span *ngIf="loading()" class="spinner"></span>
+          </button>
+        </div>
+      </div>
+    </div>

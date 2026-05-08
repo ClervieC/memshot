@@ -1,0 +1,71 @@
+<div class="event-page">
+      <div class="bg-glow"></div>
+
+      <div class="loading-state" *ngIf="loading()">
+        <div class="spin"></div>
+      </div>
+
+      <div class="not-found" *ngIf="!loading() && !event()">
+        <h2>Événement introuvable</h2>
+        <p>Ce lien n'est pas valide ou l'événement n'existe plus.</p>
+        <button (click)="router.navigate(['/'])">Retour à l'accueil</button>
+      </div>
+
+      <div class="event-entry" *ngIf="!loading() && event()">
+        <div class="brand">
+          <div class="dot"></div>
+          <span>Memshot</span>
+        </div>
+
+        <div class="event-info">
+          <div class="event-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            {{ event()!.date | date: 'dd MMMM yyyy' }}
+          </div>
+
+          <h1>{{ event()!.name }}</h1>
+          <p *ngIf="event()!.description" class="event-desc">{{ event()!.description }}</p>
+        </div>
+
+        <div class="password-form">
+          <h3>Accéder à l'événement</h3>
+          <p class="pw-hint">Entrez le mot de passe fourni par l'organisateur</p>
+
+          <div class="pw-field">
+            <input
+              type="password"
+              [(ngModel)]="password"
+              placeholder="Mot de passe"
+              (keyup.enter)="enter()"
+              [class.shake]="shaking()"
+            />
+          </div>
+
+          <div class="error" *ngIf="error()">{{ error() }}</div>
+
+          <button class="btn-enter" (click)="enter()" [disabled]="entering()">
+            <span *ngIf="!entering()">
+              Entrer
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+            <span *ngIf="entering()" class="spinner"></span>
+          </button>
+        </div>
+
+        <div class="photo-count" *ngIf="event()!.photoCount > 0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          {{ event()!.photoCount }} photo{{ event()!.photoCount !== 1 ? 's' : '' }} partagée{{ event()!.photoCount !== 1 ? 's' : '' }}
+        </div>
+      </div>
+    </div>

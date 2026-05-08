@@ -1,0 +1,129 @@
+<div class="dashboard">
+      <header>
+        <div class="logo">
+          <div class="dot"></div>
+          <span>Memshot</span>
+        </div>
+        <div class="header-actions">
+          <button class="btn-new" (click)="router.navigate(['/admin/create-event'])">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Nouvel événement
+          </button>
+          <button class="btn-logout" (click)="logout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <div class="page-title">
+          <h1>Mes <em>événements</em></h1>
+          <span class="count">{{ events().length }} événement{{ events().length !== 1 ? 's' : '' }}</span>
+        </div>
+
+        <div class="loading" *ngIf="loading()">
+          <div class="spin"></div>
+        </div>
+
+        <div class="empty" *ngIf="!loading() && events().length === 0">
+          <div class="empty-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M16 28s2-4 8-4 8 4 8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="18" cy="20" r="2" fill="currentColor"/>
+              <circle cx="30" cy="20" r="2" fill="currentColor"/>
+            </svg>
+          </div>
+          <p>Aucun événement pour l'instant</p>
+          <button class="btn-create-first" (click)="router.navigate(['/admin/create-event'])">
+            Créer votre premier événement
+          </button>
+        </div>
+
+        <div class="events-grid" *ngIf="!loading() && events().length > 0">
+          <div class="event-card" *ngFor="let event of events()">
+            <div class="event-card-inner" (click)="openEvent(event)">
+              <div class="event-meta">
+                <span class="event-date">{{ toDate(event.date) | date: 'dd MMM yyyy' }}</span>
+                <span class="event-count">{{ event.photoCount }} photo{{ event.photoCount !== 1 ? 's' : '' }}</span>
+              </div>
+              <h3>{{ event.name }}</h3>
+              <p *ngIf="event.description" class="event-desc">{{ event.description }}</p>
+            </div>
+            <div class="event-footer">
+              <span class="event-id">ID: {{ event.id.slice(0,8) }}…</span>
+              <div class="event-actions">
+                <button class="btn-qr" (click)="showQr(event, $event)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                    <path d="M14 14h1v1h-1zM18 14h3v1h-3zM14 18h1v3h-1zM16 16h2v2h-2zM19 17h2v4h-2zM17 19h1v2h-1z"/>
+                  </svg>
+                  QR code
+                </button>
+                <button class="btn-arrow" (click)="openEvent(event)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- QR Modal -->
+      <div class="modal-backdrop" *ngIf="qrModal()" (click)="closeQr()">
+        <div class="modal" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div>
+              <h2>{{ qrModal()!.event.name }}</h2>
+              <span class="modal-date">{{ toDate(qrModal()!.event.date) | date: 'dd MMMM yyyy' }}</span>
+            </div>
+            <button class="modal-close" (click)="closeQr()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="modal-qr">
+            <div class="qr-loading" *ngIf="qrModal()!.loading">
+              <div class="spin dark"></div>
+            </div>
+            <img *ngIf="!qrModal()!.loading" [src]="qrModal()!.dataUrl" alt="QR Code" />
+          </div>
+
+          <div class="modal-info">
+            <div class="info-row">
+              <span class="info-label">Mot de passe participants</span>
+              <span class="info-value pw">{{ qrModal()!.event.password }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Lien direct</span>
+              <div class="url-row">
+                <span class="info-value url">{{ getEventUrl(qrModal()!.event.id) }}</span>
+                <button class="btn-copy" (click)="copyUrl(qrModal()!.event.id)">
+                  {{ copied() ? '✓' : 'Copier' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-download" (click)="downloadQr()" [disabled]="qrModal()!.loading">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Télécharger le QR code
+          </button>
+        </div>
+      </div>
+    </div>
