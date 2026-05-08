@@ -1,0 +1,12 @@
+.lang-btn {
+      background: rgba(29,28,24,0.06);
+      border: 1px solid rgba(29,28,24,0.12);
+      color: rgba(29,28,24,0.75);
+      padding: 0.3rem 0.75rem;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn:hover { background: rgba(29,28,24,0.1); }

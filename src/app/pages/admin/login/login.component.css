@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;1,300&family=DM+Sans:wght@300;400;500&display=swap');
 
-    :host { display: block; min-height: 100vh; background: #0d0d0d; color: #f0ede8; font-family: 'DM Sans', sans-serif; }
+    :host { display: block; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
     .login-page {
       min-height: 100vh;
@@ -16,12 +16,12 @@
       width: 40px; height: 40px;
       display: flex; align-items: center; justify-content: center;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(29,28,24,0.12);
       cursor: pointer;
-      color: rgba(240,237,232,0.6);
+      color: rgba(29,28,24,0.65);
       transition: all 0.2s;
     }
-    .back:hover { background: rgba(255,255,255,0.05); color: #f0ede8; }
+    .back:hover { background: rgba(29,28,24,0.06); color: var(--text); }
     .back svg { width: 18px; height: 18px; }
 
     .form-wrap {
@@ -33,13 +33,13 @@
       display: flex; align-items: center; gap: 0.5rem;
       margin-bottom: 2.5rem;
       font-size: 1rem; font-weight: 500;
-      color: rgba(240,237,232,0.5);
+      color: var(--text-muted);
     }
 
     .dot {
       width: 8px; height: 8px;
       border-radius: 50%;
-      background: #e8d5c4;
+      background: var(--accent);
     }
 
     h2 {
@@ -48,20 +48,21 @@
       font-weight: 300;
       line-height: 1.1;
       margin: 0 0 2rem;
+      color: var(--text);
     }
 
-    h2 em { font-style: italic; color: #e8d5c4; }
+    h2 em { font-style: italic; color: var(--accent); }
 
     .tabs {
       display: flex;
       gap: 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(29,28,24,0.12);
       margin-bottom: 2rem;
     }
 
     .tabs button {
       background: none; border: none;
-      color: rgba(240,237,232,0.4);
+      color: var(--text-muted);
       font-family: 'DM Sans', sans-serif;
       font-size: 0.875rem;
       padding: 0.75rem 1.25rem 0.75rem 0;
@@ -72,8 +73,8 @@
     }
 
     .tabs button.active {
-      color: #f0ede8;
-      border-bottom-color: #e8d5c4;
+      color: var(--text);
+      border-bottom-color: var(--accent);
     }
 
     .field { margin-bottom: 1.25rem; }
@@ -81,7 +82,7 @@
     label {
       display: block;
       font-size: 0.8rem;
-      color: rgba(240,237,232,0.45);
+      color: var(--text-muted);
       margin-bottom: 0.5rem;
       letter-spacing: 0.05em;
       text-transform: uppercase;
@@ -89,11 +90,11 @@
 
     input {
       width: 100%;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: #ffffff;
+      border: 1px solid rgba(29,28,24,0.12);
       border-radius: 10px;
       padding: 0.875rem 1rem;
-      color: #f0ede8;
+      color: var(--text);
       font-family: 'DM Sans', sans-serif;
       font-size: 0.95rem;
       outline: none;
@@ -101,13 +102,13 @@
       box-sizing: border-box;
     }
 
-    input:focus { border-color: rgba(232, 213, 196, 0.5); }
-    input::placeholder { color: rgba(240,237,232,0.2); }
+    input:focus { border-color: rgba(29,28,24,0.2); }
+    input::placeholder { color: var(--text-muted-soft); }
 
     .error {
-      background: rgba(232, 100, 100, 0.1);
-      border: 1px solid rgba(232, 100, 100, 0.3);
-      color: #f0a0a0;
+      background: rgba(232, 100, 100, 0.12);
+      border: 1px solid rgba(232, 100, 100, 0.25);
+      color: #a94a4a;
       padding: 0.75rem 1rem;
       border-radius: 8px;
       font-size: 0.85rem;
@@ -116,8 +117,8 @@
 
     .btn-submit {
       width: 100%;
-      background: #f0ede8;
-      color: #0d0d0d;
+      background: #ffffff;
+      color: var(--text);
       border: none;
       padding: 1rem;
       border-radius: 100px;
@@ -133,13 +134,13 @@
       min-height: 52px;
     }
 
-    .btn-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,237,232,0.15); }
+    .btn-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(29,28,24,0.08); }
     .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .spinner {
       width: 20px; height: 20px;
-      border: 2px solid rgba(13,13,13,0.3);
-      border-top-color: #0d0d0d;
+      border: 2px solid rgba(29,28,24,0.18);
+      border-top-color: rgba(29,28,24,0.8);
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
       display: inline-block;

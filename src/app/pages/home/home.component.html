@@ -17,15 +17,15 @@
           <span>Memshot</span>
         </div>
 
-        <h1>Capturez<br><em>l'instant</em></h1>
-        <p class="subtitle">Entrez le code de votre événement<br>pour accéder aux photos</p>
+        <h1>{{ 'HOME.TITLE' | translate }}<br><em>{{ 'HOME.TITLE_EM' | translate }}</em></h1>
+        <p class="subtitle">{{ 'HOME.SUBTITLE' | translate }}</p>
 
         <div class="code-form">
           <div class="input-wrap" [class.error]="error()">
             <input
               type="text"
               [(ngModel)]="code"
-              placeholder="Code de l'événement"
+              placeholder="{{ 'HOME.CODE_PLACEHOLDER' | translate }}"
               (keyup.enter)="joinEvent()"
               autocomplete="off"
               autocorrect="off"
@@ -37,7 +37,7 @@
 
           <button class="btn-join" (click)="joinEvent()" [disabled]="loading()">
             <span *ngIf="!loading()">
-              Rejoindre
+              {{ 'HOME.JOIN_BTN' | translate }}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
@@ -47,16 +47,22 @@
         </div>
 
         <div class="divider">
-          <span>ou</span>
+          <span>{{ 'HOME.OR' | translate }}</span>
         </div>
 
-        <button class="btn-secondary" (click)="goToAdmin()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
-          </svg>
-          Espace organisateur
-        </button>
+        <div class="organizer">
+            <button class="btn-secondary" (click)="goToAdmin()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+                {{ 'HOME.ORGANIZER_SPACE' | translate }}
+            </button>
+        </div>
+        
       </div>
+      <div style="position:fixed;top:1rem;right:1rem;">
+        <app-lang-switcher></app-lang-switcher>
+    </div>
     </div>

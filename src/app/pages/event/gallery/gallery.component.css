@@ -1,38 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;1,300&family=DM+Sans:wght@300;400;500&display=swap');
 
-    :host { display: block; min-height: 100vh; background: #0d0d0d; color: #f0ede8; font-family: 'DM Sans', sans-serif; }
+    :host { display: block; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
     header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 1rem 1.25rem;
-      background: rgba(13,13,13,0.95); backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
       position: sticky; top: 0; z-index: 10;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(29,28,24,0.08);
     }
 
     .header-left { display: flex; align-items: center; gap: 0.75rem; }
 
     .icon-btn {
       width: 36px; height: 36px; border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: none; color: rgba(240,237,232,0.6);
+      border: 1px solid rgba(29,28,24,0.12);
+      background: rgba(255,255,255,0.88); color: rgba(29,28,24,0.65);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.2s;
     }
-    .icon-btn:hover { background: rgba(255,255,255,0.05); color: #f0ede8; }
+    .icon-btn:hover { background: rgba(29,28,24,0.06); color: var(--text); }
     .icon-btn svg { width: 16px; height: 16px; }
 
     .header-info { display: flex; flex-direction: column; }
-    .event-name { font-size: 0.9rem; font-weight: 500; }
-    .photo-count { font-size: 0.75rem; color: rgba(240,237,232,0.35); }
+    .event-name { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+    .photo-count { font-size: 0.75rem; color: var(--text-muted); }
 
     .header-right { display: flex; align-items: center; gap: 0.625rem; }
 
     .live-badge {
       display: flex; align-items: center; gap: 0.35rem;
       font-size: 0.75rem; font-weight: 500;
-      color: rgba(240,237,232,0.6);
-      background: rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      background: rgba(200,169,122,0.12);
       padding: 0.25rem 0.6rem; border-radius: 100px;
     }
 
@@ -49,7 +49,7 @@
 
     .btn-camera {
       width: 40px; height: 40px; border-radius: 50%;
-      background: #f0ede8; border: none; color: #0d0d0d;
+      background: #ffffff; border: none; color: var(--text);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.2s;
     }
@@ -57,8 +57,8 @@
     .btn-camera svg { width: 18px; height: 18px; }
 
     .btn-dashboard {
-      background: rgba(255,255,255,0.07); border: none;
-      color: rgba(240,237,232,0.7); padding: 0.4rem 0.875rem;
+      background: rgba(29,28,24,0.08); border: none;
+      color: var(--text-muted); padding: 0.4rem 0.875rem;
       border-radius: 100px; font-family: 'DM Sans', sans-serif;
       font-size: 0.8rem; cursor: pointer;
     }
@@ -69,8 +69,8 @@
 
     .spin {
       width: 28px; height: 28px;
-      border: 2px solid rgba(255,255,255,0.1);
-      border-top-color: rgba(240,237,232,0.5);
+      border: 2px solid rgba(29,28,24,0.12);
+      border-top-color: rgba(29,28,24,0.35);
       border-radius: 50%; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -80,15 +80,15 @@
       justify-content: center; min-height: 60vh; padding: 2rem; text-align: center; gap: 0.75rem;
     }
 
-    .empty-icon { color: rgba(240,237,232,0.15); margin-bottom: 0.5rem; }
+    .empty-icon { color: rgba(29,28,24,0.2); margin-bottom: 0.5rem; }
     .empty-icon svg { width: 64px; height: 64px; }
 
-    .empty-gallery h3 { margin: 0; font-weight: 400; font-size: 1.1rem; }
-    .empty-gallery p { color: rgba(240,237,232,0.4); margin: 0; font-size: 0.9rem; }
+    .empty-gallery h3 { margin: 0; font-weight: 400; font-size: 1.1rem; color: var(--text); }
+    .empty-gallery p { color: var(--text-muted-soft); margin: 0; font-size: 0.9rem; }
 
     .btn-take-first {
       display: flex; align-items: center; gap: 0.5rem;
-      background: #f0ede8; color: #0d0d0d;
+      background: #ffffff; color: var(--text);
       border: none; padding: 0.875rem 1.5rem; border-radius: 100px;
       font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
       cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;
@@ -106,7 +106,7 @@
     .photo-item {
       aspect-ratio: 1;
       overflow: hidden; position: relative; cursor: pointer;
-      background: rgba(255,255,255,0.04);
+      background: #ffffff;
     }
 
     .photo-item img {
@@ -119,7 +119,7 @@
 
     .photo-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+      background: linear-gradient(to top, rgba(29,28,24,0.2), transparent);
       opacity: 0; transition: opacity 0.2s;
       display: flex; align-items: flex-end;
       padding: 0.5rem;
@@ -127,22 +127,22 @@
 
     .photo-item:hover .photo-overlay { opacity: 1; }
 
-    .uploader-name { font-size: 0.7rem; color: rgba(255,255,255,0.9); }
+    .uploader-name { font-size: 0.7rem; color: rgba(29,28,24,0.85); }
 
     .fab {
       position: fixed; bottom: 2rem; right: 1.5rem;
       width: 56px; height: 56px; border-radius: 50%;
-      background: #f0ede8; color: #0d0d0d;
+      background: #ffffff; color: var(--text);
       border: none; display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.2s;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 20px rgba(29,28,24,0.08);
       z-index: 20;
     }
-    .fab:hover { transform: scale(1.08); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    .fab:hover { transform: scale(1.08); box-shadow: 0 8px 32px rgba(29,28,24,0.12); }
     .fab svg { width: 22px; height: 22px; }
 
     .lightbox {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+      position: fixed; inset: 0; background: rgba(29,28,24,0.9);
       display: flex; align-items: center; justify-content: center;
       z-index: 100; cursor: pointer; flex-direction: column; gap: 1rem;
     }
@@ -150,7 +150,7 @@
     .lb-close {
       position: absolute; top: 1.25rem; right: 1.25rem;
       width: 40px; height: 40px; border-radius: 50%;
-      background: rgba(255,255,255,0.1); border: none; color: white;
+      background: rgba(255,255,255,0.85); border: none; color: var(--text);
       display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .lb-close svg { width: 18px; height: 18px; }
@@ -161,5 +161,5 @@
     }
 
     .lb-caption {
-      color: rgba(255,255,255,0.5); font-size: 0.85rem;
+      color: rgba(255,255,255,0.8); font-size: 0.85rem;
     }

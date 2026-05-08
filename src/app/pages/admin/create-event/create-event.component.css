@@ -1,51 +1,52 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;1,300&family=DM+Sans:wght@300;400;500&display=swap');
 
-    :host { display: block; min-height: 100vh; background: #0d0d0d; color: #f0ede8; font-family: 'DM Sans', sans-serif; }
+    :host { display: block; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
     header {
       display: flex; align-items: center; gap: 1rem;
       padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(29,28,24,0.08);
+      background: rgba(255,255,255,0.92);
     }
 
     .back {
       width: 36px; height: 36px;
       display: flex; align-items: center; justify-content: center;
-      border-radius: 50%; border: 1px solid rgba(255,255,255,0.1);
-      background: none; color: rgba(240,237,232,0.6); cursor: pointer; transition: all 0.2s;
+      border-radius: 50%; border: 1px solid rgba(29,28,24,0.12);
+      background: #ffffff; color: rgba(29,28,24,0.65); cursor: pointer; transition: all 0.2s;
     }
-    .back:hover { background: rgba(255,255,255,0.05); color: #f0ede8; }
+    .back:hover { background: rgba(29,28,24,0.06); color: var(--text); }
     .back svg { width: 16px; height: 16px; }
 
-    .header-title { font-size: 0.9rem; color: rgba(240,237,232,0.5); }
+    .header-title { font-size: 0.9rem; color: var(--text-muted); }
 
     main, .qr-result { padding: 2rem 1.5rem; max-width: 440px; margin: 0 auto; }
 
     h1 { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 300; line-height: 1.1; margin: 0 0 2rem; }
-    h1 em { font-style: italic; color: #e8d5c4; }
+    h1 em { font-style: italic; color: #c8a97a; }
 
     .field { margin-bottom: 1.25rem; }
 
     label {
       display: block; font-size: 0.78rem;
-      color: rgba(240,237,232,0.45); margin-bottom: 0.5rem;
+      color: var(--text-muted); margin-bottom: 0.5rem;
       letter-spacing: 0.05em; text-transform: uppercase;
     }
 
     input, textarea {
-      width: 100%; background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
+      width: 100%; background: #ffffff;
+      border: 1px solid rgba(29,28,24,0.12);
       border-radius: 10px; padding: 0.875rem 1rem;
-      color: #f0ede8; font-family: 'DM Sans', sans-serif;
+      color: var(--text); font-family: 'DM Sans', sans-serif;
       font-size: 0.95rem; outline: none; transition: border-color 0.2s;
       box-sizing: border-box;
     }
 
     textarea { resize: vertical; min-height: 80px; }
-    input:focus, textarea:focus { border-color: rgba(232,213,196,0.5); }
-    input::placeholder, textarea::placeholder { color: rgba(240,237,232,0.2); }
+    input:focus, textarea:focus { border-color: rgba(29,28,24,0.2); }
+    input::placeholder, textarea::placeholder { color: var(--text-muted-soft); }
 
-    .field-hint { font-size: 0.75rem; color: rgba(240,237,232,0.3); margin-top: 0.4rem; display: block; }
+    .field-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; display: block; }
 
     .error {
       background: rgba(232,100,100,0.1); border: 1px solid rgba(232,100,100,0.3);
@@ -54,18 +55,18 @@
     }
 
     .btn-create {
-      width: 100%; background: #f0ede8; color: #0d0d0d;
-      border: none; padding: 1rem; border-radius: 100px;
+      width: 100%; background: #ffffff; color: var(--text);
+      border: 1px solid rgba(29,28,24,0.12); padding: 1rem; border-radius: 100px;
       font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
       cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;
       min-height: 52px; display: flex; align-items: center; justify-content: center;
     }
-    .btn-create:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,237,232,0.15); }
+    .btn-create:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(29,28,24,0.08); }
     .btn-create:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .spinner {
-      width: 20px; height: 20px; border: 2px solid rgba(13,13,13,0.3);
-      border-top-color: #0d0d0d; border-radius: 50%;
+      width: 20px; height: 20px; border: 2px solid rgba(13,13,13,0.12);
+      border-top-color: rgba(29,28,24,0.8); border-radius: 50%;
       animation: spin 0.6s linear infinite; display: inline-block;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -78,10 +79,10 @@
     }
     .success-badge svg { width: 14px; height: 14px; }
 
-    .qr-hint { color: rgba(240,237,232,0.45); font-size: 0.9rem; line-height: 1.5; margin: -1rem 0 2rem; }
+    .qr-hint { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin: -1rem 0 2rem; }
 
     .qr-container {
-      background: white; border-radius: 20px; padding: 1.5rem;
+      background: #ffffff; border-radius: 20px; padding: 1.5rem;
       text-align: center; margin-bottom: 1.5rem;
     }
 
@@ -93,39 +94,39 @@
     }
 
     .event-url { margin-bottom: 1.5rem; }
-    .url-label { font-size: 0.78rem; color: rgba(240,237,232,0.35); letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 0.5rem; }
+    .url-label { font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 0.5rem; }
 
     .url-box {
       display: flex; align-items: center; gap: 0.5rem;
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      background: #ffffff; border: 1px solid rgba(29,28,24,0.12);
       border-radius: 10px; padding: 0.75rem 1rem;
     }
 
-    .url-box span { flex: 1; font-size: 0.8rem; color: rgba(240,237,232,0.5); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; }
+    .url-box span { flex: 1; font-size: 0.8rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; }
 
     .url-box button {
-      background: rgba(255,255,255,0.08); border: none;
-      color: rgba(240,237,232,0.7); padding: 0.3rem 0.75rem;
+      background: rgba(29,28,24,0.06); border: none;
+      color: rgba(29,28,24,0.75); padding: 0.3rem 0.75rem;
       border-radius: 6px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
       font-family: 'DM Sans', sans-serif; white-space: nowrap;
     }
-    .url-box button:hover { background: rgba(255,255,255,0.15); }
+    .url-box button:hover { background: rgba(29,28,24,0.1); }
 
     .qr-actions { display: flex; flex-direction: column; gap: 0.75rem; }
 
     .btn-download {
       display: flex; align-items: center; justify-content: center; gap: 0.625rem;
-      background: #f0ede8; color: #0d0d0d; border: none;
+      background: #ffffff; color: var(--text); border: 1px solid rgba(29,28,24,0.12);
       padding: 1rem; border-radius: 100px;
       font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
       cursor: pointer; transition: all 0.2s;
     }
-    .btn-download:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(240,237,232,0.15); }
+    .btn-download:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(29,28,24,0.08); }
     .btn-download svg { width: 16px; height: 16px; }
 
     .btn-dashboard {
-      background: none; border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(240,237,232,0.7); padding: 1rem; border-radius: 100px;
+      background: none; border: 1px solid rgba(29,28,24,0.12);
+      color: rgba(29,28,24,0.75); padding: 1rem; border-radius: 100px;
       font-family: 'DM Sans', sans-serif; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
     }
-    .btn-dashboard:hover { background: rgba(255,255,255,0.04); }
+    .btn-dashboard:hover { background: rgba(29,28,24,0.06); }
