@@ -22,6 +22,8 @@ export class EventComponent implements OnInit {
   error = signal('');
   shaking = signal(false);
   eventId = '';
+  showNameModal = signal(false);
+  username = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -48,6 +50,13 @@ export class EventComponent implements OnInit {
     }
   }
 
+  confirmJoin() {
+    if (this.username.trim()) {
+      localStorage.setItem('username', this.username.trim());
+    }
+    this.router.navigate(['/event', this.eventId, 'gallery']);
+  }
+
   async enter() {
     if (!this.password) {
       this.error.set(this.translate.instant('EVENT.ERROR_EMPTY'));
@@ -62,7 +71,8 @@ export class EventComponent implements OnInit {
 
       if (valid) {
         sessionStorage.setItem(`event_${this.eventId}`, 'true');
-        this.router.navigate(['/event', this.eventId, 'gallery']);
+        this.username = localStorage.getItem('username') || '';
+        this.showNameModal.set(true);
       } else {
         this.error.set(this.translate.instant('EVENT.ERROR_WRONG'));
         this.shaking.set(true);

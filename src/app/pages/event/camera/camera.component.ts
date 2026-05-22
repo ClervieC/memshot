@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy, signal, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { EventService } from '../../../services/event.service';
 
 @Component({
   selector: 'app-camera',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './camera.component.html',
   styleUrl: './camera.component.css'
 })
@@ -22,6 +23,12 @@ export class CameraComponent implements OnInit, OnDestroy {
   cameraError = signal(false);
   uploadQueue = signal(0);
   uploadError = signal(false);
+  captureFlash = signal(false);
+  thumbnailUrl = signal<string | null>(null);
+  thumbnailUploading = signal(false);
+  thumbnailSuccess = signal(false);
+  thumbnailFading = signal(false);
+  private filePickerOpen = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -71,6 +78,10 @@ export class CameraComponent implements OnInit, OnDestroy {
   }
 
   capture() {
+    this.captureFlash.set(true);
+    setTimeout(() => this.captureFlash.set(false), 250);
+    if (navigator.vibrate) navigator.vibrate(15);
+
     const video = this.videoEl.nativeElement;
     const canvas = this.canvasEl.nativeElement;
     canvas.width = video.videoWidth;
@@ -82,12 +93,32 @@ export class CameraComponent implements OnInit, OnDestroy {
     } else {
       ctx.drawImage(video, 0, 0);
     }
+
+    this.thumbnailUrl.set(canvas.toDataURL('image/jpeg', 0.3));
+    this.thumbnailUploading.set(true);
+    this.thumbnailSuccess.set(false);
+    this.thumbnailFading.set(false);
+
     canvas.toBlob(blob => {
       if (blob) this.sendBlob(blob);
     }, 'image/jpeg', 0.92);
   }
 
+  onGalleryClick() {
+    this.filePickerOpen = true;
+    setTimeout(() => { this.filePickerOpen = false; }, 10000);
+  }
+
+  @HostListener('window:popstate')
+  onPopState() {
+    if (this.filePickerOpen) {
+      this.filePickerOpen = false;
+      window.history.pushState(null, '', window.location.href);
+    }
+  }
+
   onFileSelect(event: Event) {
+    this.filePickerOpen = false;
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) this.sendBlob(file);
   }
@@ -100,7 +131,20 @@ export class CameraComponent implements OnInit, OnDestroy {
         const file = new File([compressed], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
         return this.eventService.uploadPhoto(this.eventId, file, name || undefined);
       })
+      .then(() => {
+        this.thumbnailUploading.set(false);
+        this.thumbnailSuccess.set(true);
+        setTimeout(() => {
+          this.thumbnailFading.set(true);
+          setTimeout(() => {
+            this.thumbnailUrl.set(null);
+            this.thumbnailSuccess.set(false);
+            this.thumbnailFading.set(false);
+          }, 300);
+        }, 1200);
+      })
       .catch(() => {
+        this.thumbnailUploading.set(false);
         this.uploadError.set(true);
         setTimeout(() => this.uploadError.set(false), 4000);
       })

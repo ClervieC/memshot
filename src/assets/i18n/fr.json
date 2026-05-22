@@ -118,7 +118,16 @@
     "DESELECT_ALL": "Aucun",
     "SEL_DOWNLOAD": "Sélection",
     "SEL_DOWNLOAD_ALL": "Toutes",
-    "SEL_DELETE": "Supprimer"
+    "SEL_DELETE": "Supprimer",
+    "DOWNLOAD_ALL": "Télécharger tout",
+    "SELECT": "Sélectionner",
+    "SHARE": "Partager",
+    "LINK_COPIED": "Lien copié !",
+    "LOGOUT": "Se déconnecter",
+    "DOWNLOAD": "Télécharger",
+    "DOWNLOAD_SELECTION": "Télécharger la sélection",
+    "DELETE_SELECTION": "Supprimer la sélection",
+    "DELETE": "Supprimer"
   },
   "CAMERA": {
     "NO_CAMERA_TITLE": "Caméra inaccessible",

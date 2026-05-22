@@ -33,6 +33,7 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedPhotos = computed(() => this.photos().filter(p => this.selectedIds().has(p.id)));
   bulkDownloading = signal(false);
 
+  private brokenPhotoIds = new Set<string>();
   private lbTouchStartX = 0;
   private lbTouchStartY = 0;
   private pgTouchStartX = 0;
@@ -74,7 +75,7 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loading.set(false);
 
     this.photosSub = this.eventService.getEventPhotos$(this.eventId).subscribe(photos => {
-      this.photos.set(photos);
+      this.photos.set(photos.filter(p => !this.brokenPhotoIds.has(p.id)));
     });
   }
 
@@ -333,6 +334,14 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!ok) return;
     await this.eventService.deletePhoto(this.eventId, photo.id);
     if (this.lightboxPhoto()?.id === photo.id) this.lightboxPhoto.set(null);
+  }
+
+  onPhotoLoadError(photo: Photo) {
+    if (this.brokenPhotoIds.has(photo.id)) return;
+    this.brokenPhotoIds.add(photo.id);
+    this.photos.update(ps => ps.filter(p => p.id !== photo.id));
+    if (this.lightboxPhoto()?.id === photo.id) this.lightboxPhoto.set(null);
+    this.eventService.deletePhoto(this.eventId, photo.id).catch(() => {});
   }
 
   async downloadPhoto(photo: Photo, e: MouseEvent) {

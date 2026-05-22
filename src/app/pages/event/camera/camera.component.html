@@ -20,32 +20,42 @@
       </button>
     </div>
 
+    <!-- Flash overlay -->
+    <div class="capture-flash" *ngIf="captureFlash()"></div>
+
     <div class="camera-bottom">
+      <!-- Thumbnail preview slot (always in DOM to stabilise grid) -->
+      <div class="capture-thumb-slot">
+        <div class="capture-thumb"
+             *ngIf="thumbnailUrl()"
+             [class.uploading]="thumbnailUploading()"
+             [class.success]="thumbnailSuccess()"
+             [class.fading]="thumbnailFading()">
+          <img [src]="thumbnailUrl()" alt="" />
+          <div class="thumb-ring"></div>
+          <div class="thumb-check" *ngIf="thumbnailSuccess()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
       <button class="capture-btn" (click)="capture()">
         <div class="capture-inner"></div>
       </button>
 
       <div class="upload-alt">
         <label class="upload-label">
-          <input type="file" accept="image/*" (change)="onFileSelect($event)" hidden />
+          <input type="file" accept="image/*" (change)="onFileSelect($event)" (click)="onGalleryClick()" hidden />
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="18" height="18" rx="2"/>
             <circle cx="8.5" cy="8.5" r="1.5"/>
             <polyline points="21 15 16 10 5 21"/>
           </svg>
-          Galerie
+          {{ 'CAMERA.GALLERY_BTN' | translate }}
         </label>
       </div>
-    </div>
-
-    <!-- Upload queue badge -->
-    <div class="upload-badge" *ngIf="uploadQueue() > 0">
-      <div class="badge-ring"></div>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <line x1="22" y1="2" x2="11" y2="13"/>
-        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-      </svg>
-      <span>{{ uploadQueue() }}</span>
     </div>
 
     <!-- Error toast -->
@@ -55,7 +65,7 @@
         <line x1="12" y1="8" x2="12" y2="12"/>
         <line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      Erreur d'envoi, réessayez
+      {{ 'CAMERA.ERROR_UPLOAD' | translate }}
     </div>
 
     <canvas #canvasEl style="display:none"></canvas>
@@ -68,11 +78,11 @@
       <line x1="48" y1="16" x2="16" y2="48" stroke="currentColor" stroke-width="1.5"/>
       <path d="M20 24v16h24V24l-4-4H24z" stroke="currentColor" stroke-width="1.5"/>
     </svg>
-    <h3>Caméra inaccessible</h3>
-    <p>Autorisez l'accès à la caméra ou choisissez depuis votre galerie</p>
+    <h3>{{ 'CAMERA.NO_CAMERA_TITLE' | translate }}</h3>
+    <p>{{ 'CAMERA.NO_CAMERA_DESC' | translate }}</p>
     <label class="btn-gallery">
       <input type="file" accept="image/*" (change)="onFileSelect($event)" hidden />
-      Choisir depuis la galerie
+      {{ 'CAMERA.CHOOSE_GALLERY' | translate }}
     </label>
   </div>
 

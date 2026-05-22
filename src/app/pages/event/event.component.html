@@ -17,7 +17,7 @@
       <div class="event-entry" *ngIf="!loading() && event()">
         <div class="brand">
           <div class="dot"></div>
-          <span>Memshot</span>
+          <span>{{ 'APP_NAME' | translate }}</span>
         </div>
 
         <div class="event-info">
@@ -71,4 +71,26 @@
           {{ (event()!.photoCount !== 1 ? 'EVENT.PHOTOS_SHARED_OTHER' : 'EVENT.PHOTOS_SHARED_ONE') | translate: { count: event()!.photoCount } }}
         </div>
       </div>
+
+    <!-- Name modal -->
+    <div class="modal-backdrop" *ngIf="showNameModal()" (click)="confirmJoin()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>{{ 'HOME.MODAL_TITLE' | translate }}</h3>
+        <p>{{ 'HOME.MODAL_SUBTITLE' | translate }}</p>
+        <input
+          type="text"
+          [(ngModel)]="username"
+          placeholder="{{ 'HOME.MODAL_PLACEHOLDER' | translate }}"
+          (keyup.enter)="confirmJoin()"
+          autocomplete="given-name"
+          autofocus
+        />
+        <button class="btn-confirm" (click)="confirmJoin()">
+          {{ 'HOME.MODAL_BTN' | translate }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
     </div>
