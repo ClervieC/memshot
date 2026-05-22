@@ -1,16 +1,33 @@
 {
   "APP_NAME": "Memshot",
+  "CONFIRM": {
+    "BULK_DELETE_TITLE": "Delete {{count}} photos?",
+    "BULK_DELETE_MSG": "This action is irreversible.",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "CLOSE": "Close",
+    "DELETE_PHOTO_TITLE": "Delete this picture?",
+    "DELETE_PHOTO_MSG": "Picture by {{name}}",
+    "CLOSE_SUBMISSIONS_TITLE": "Close submissions?",
+    "CLOSE_SUBMISSIONS_MSG": "Participants of \"{{name}}\" will no longer be able to add pictures.",
+    "DELETE_EVENT_TITLE": "Delete \"{{name}}\"?",
+    "DELETE_EVENT_MSG": "This action is irreversible. All pictures will be deleted."
+  },
   "HOME": {
     "TITLE": "Capture",
     "TITLE_EM": "the moment",
-    "SUBTITLE": "Enter your event code to access the photos",
+    "SUBTITLE": "Enter your event code to access the picture",
     "CODE_PLACEHOLDER": "Event code",
     "JOIN_BTN": "Join",
     "OR": "or",
     "ORGANIZER_SPACE": "Organizer space",
     "ERROR_EMPTY": "Please enter your event code.",
     "ERROR_NOT_FOUND": "Code not found. Check and try again.",
-    "ERROR_GENERIC": "An error occurred. Please try again."
+    "ERROR_GENERIC": "An error occurred. Please try again.",
+    "MODAL_TITLE": "What's your name?",
+    "MODAL_SUBTITLE": "Your name will appear on your pictures. It's optional.",
+    "MODAL_PLACEHOLDER": "Your first name",
+    "MODAL_BTN": "Access the event"
   },
   "LOGIN": {
     "TITLE": "Organizer",
@@ -36,15 +53,15 @@
     "EVENTS_COUNT": "event",
     "EMPTY_TEXT": "No events yet",
     "CREATE_FIRST": "Create your first event",
-    "PHOTO_COUNT": "photo",
+    "PHOTO_COUNT": "picture",
     "QR_CODE": "QR code",
     "PARTICIPANT_PASSWORD": "Participant password",
     "DIRECT_LINK": "Direct link",
     "COPY": "Copy",
     "COPIED": "✓",
     "DOWNLOAD_QR": "Download QR code",
-    "PHOTOS_COUNT_ONE": "{{count}} photo",
-    "PHOTOS_COUNT_OTHER": "{{count}} photos"
+    "PHOTOS_COUNT_ONE": "{{count}} picture",
+    "PHOTOS_COUNT_OTHER": "{{count}} pictures"
   },
   "CREATE_EVENT": {
     "HEADER": "New event",
@@ -64,7 +81,7 @@
     "SUCCESS_BADGE": "Event created!",
     "QR_TITLE": "Your QR",
     "QR_TITLE_EM": "code",
-    "QR_HINT": "Display it at the event so guests can take photos",
+    "QR_HINT": "Display it at the event so guests can take picture",
     "URL_LABEL": "Direct URL",
     "COPY_BTN": "Copy",
     "COPIED": "✓",
@@ -81,18 +98,27 @@
     "ENTER_BTN": "Enter",
     "ERROR_EMPTY": "Please enter the password.",
     "ERROR_WRONG": "Incorrect password.",
-    "PHOTOS_SHARED_ONE": "{{count}} photo shared",
-    "PHOTOS_SHARED_OTHER": "{{count}} photos shared"
+    "PHOTOS_SHARED_ONE": "{{count}} picture shared",
+    "PHOTOS_SHARED_OTHER": "{{count}} pictures shared"
   },
   "GALLERY": {
-    "PHOTOS_COUNT_ONE": "{{count}} photo",
-    "PHOTOS_COUNT_OTHER": "{{count}} photos",
+    "PHOTOS_COUNT_ONE": "{{count}} picture",
+    "PHOTOS_COUNT_OTHER": "{{count}} pictures",
     "LIVE": "Live",
-    "EMPTY_TITLE": "No photos yet",
-    "EMPTY_SUBTITLE": "Be the first to take a photo!",
-    "TAKE_PHOTO": "Take a photo",
+    "CLOSED": "Closed",
+    "CLOSE_SUBMISSIONS": "Close submissions",
+    "REOPEN_SUBMISSIONS": "Reopen submissions",
+    "PASSWORD_LABEL": "Code",
+    "EMPTY_TITLE": "No picture yet",
+    "EMPTY_SUBTITLE": "Be the first to take a picture!",
+    "TAKE_PHOTO": "Take a picture",
     "DASHBOARD": "Dashboard",
-    "BY": "By {{name}}"
+    "BY": "By {{name}}",
+    "SELECT_ALL": "All",
+    "DESELECT_ALL": "None",
+    "SEL_DOWNLOAD": "Selected",
+    "SEL_DOWNLOAD_ALL": "All",
+    "SEL_DELETE": "Delete"
   },
   "CAMERA": {
     "NO_CAMERA_TITLE": "Camera unavailable",
@@ -100,11 +126,11 @@
     "CHOOSE_GALLERY": "Choose from gallery",
     "GALLERY_BTN": "Gallery",
     "NAME_PLACEHOLDER": "Your first name (optional)",
-    "SEND_BTN": "Send photo",
+    "SEND_BTN": "Send picture",
     "UPLOADING": "Uploading…",
-    "SUCCESS_TITLE": "Photo sent!",
+    "SUCCESS_TITLE": "Picture sent!",
     "SUCCESS_DESC": "It now appears in the gallery",
-    "TAKE_ANOTHER": "Take another photo",
+    "TAKE_ANOTHER": "Take another picture",
     "SEE_GALLERY": "See gallery",
     "ERROR_UPLOAD": "Upload error. Please try again."
   }

@@ -15,8 +15,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 })
 export class HomeComponent {
   code = '';
+  username = '';
   loading = signal(false);
   error = signal('');
+  showModal = signal(false);
+  private pendingEventId = '';
 
   constructor(private router: Router, private eventService: EventService, private translate: TranslateService) {}
 
@@ -37,12 +40,25 @@ export class HomeComponent {
         return;
       }
       sessionStorage.setItem(`event_${event.id}`, 'true');
-      this.router.navigate(['/event', event.id, 'gallery']);
+      this.pendingEventId = event.id;
+      this.username = localStorage.getItem('username') || '';
+      this.showModal.set(true);
     } catch {
       this.error.set(this.translate.instant('HOME.ERROR_GENERIC'));
     } finally {
       this.loading.set(false);
     }
+  }
+
+  closeModal() {
+    this.showModal.set(false);
+  }
+
+  confirmJoin() {
+    if (this.username.trim()) {
+      localStorage.setItem('username', this.username.trim());
+    }
+    this.router.navigate(['/event', this.pendingEventId, 'gallery']);
   }
 
   goToAdmin() {

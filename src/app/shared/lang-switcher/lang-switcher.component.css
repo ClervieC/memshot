@@ -2,6 +2,13 @@
   position: relative;
 }
 
+.flag {
+  width: 18px; height: 13px;
+  border-radius: 2px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 .lang-btn {
   display: flex;
   align-items: center;

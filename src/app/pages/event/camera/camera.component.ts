@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy, signal, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { EventService } from '../../../services/event.service';
 
 @Component({
   selector: 'app-camera',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './camera.component.html',
   styleUrl: './camera.component.css'
 })
@@ -19,12 +18,10 @@ export class CameraComponent implements OnInit, OnDestroy {
   eventName = signal('');
   facingMode = 'environment';
   stream: MediaStream | null = null;
-  previewUrl = signal('');
-  previewBlob: Blob | null = null;
   uploaderName = '';
-  uploading = signal(false);
-  uploaded = signal(false);
   cameraError = signal(false);
+  uploadQueue = signal(0);
+  uploadError = signal(false);
 
   constructor(
     private route: ActivatedRoute,
@@ -35,14 +32,19 @@ export class CameraComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get('eventId') || '';
 
-    // Check auth
     const auth = sessionStorage.getItem(`event_${this.eventId}`);
     if (!auth) {
       this.router.navigate(['/event', this.eventId]);
       return;
     }
 
+    this.uploaderName = localStorage.getItem('username') || '';
+
     const event = await this.eventService.getEvent(this.eventId);
+    if (event?.closed) {
+      this.router.navigate(['/event', this.eventId, 'gallery']);
+      return;
+    }
     if (event) this.eventName.set(event.name);
 
     await this.startCamera();
@@ -64,9 +66,7 @@ export class CameraComponent implements OnInit, OnDestroy {
 
   async switchCamera() {
     this.facingMode = this.facingMode === 'environment' ? 'user' : 'environment';
-    if (this.stream) {
-      this.stream.getTracks().forEach(t => t.stop());
-    }
+    if (this.stream) this.stream.getTracks().forEach(t => t.stop());
     await this.startCamera();
   }
 
@@ -83,47 +83,50 @@ export class CameraComponent implements OnInit, OnDestroy {
       ctx.drawImage(video, 0, 0);
     }
     canvas.toBlob(blob => {
-      if (blob) {
-        this.previewBlob = blob;
-        this.previewUrl.set(URL.createObjectURL(blob));
-      }
+      if (blob) this.sendBlob(blob);
     }, 'image/jpeg', 0.92);
   }
 
   onFileSelect(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-    this.previewBlob = file;
-    this.previewUrl.set(URL.createObjectURL(file));
+    if (file) this.sendBlob(file);
   }
 
-  cancelPreview() {
-    this.previewUrl.set('');
-    this.previewBlob = null;
+  private sendBlob(blob: Blob) {
+    const name = this.uploaderName;
+    this.uploadQueue.update(n => n + 1);
+    this.compressImage(blob)
+      .then(compressed => {
+        const file = new File([compressed], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
+        return this.eventService.uploadPhoto(this.eventId, file, name || undefined);
+      })
+      .catch(() => {
+        this.uploadError.set(true);
+        setTimeout(() => this.uploadError.set(false), 4000);
+      })
+      .finally(() => {
+        this.uploadQueue.update(n => Math.max(0, n - 1));
+      });
   }
 
-  async upload() {
-    if (!this.previewBlob) return;
-    this.uploading.set(true);
-    try {
-      const file = new File([this.previewBlob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
-      await this.eventService.uploadPhoto(this.eventId, file, this.uploaderName || undefined);
-      this.uploading.set(false);
-      this.uploaded.set(true);
-    } catch {
-      this.uploading.set(false);
-      alert('Erreur lors de l\'envoi. Réessayez.');
-    }
-  }
-
-  resetForAnotherPhoto() {
-    this.uploaded.set(false);
-    this.previewUrl.set('');
-    this.previewBlob = null;
-  }
-
-  goToGallery() {
-    this.router.navigate(['/event', this.eventId, 'gallery']);
+  private compressImage(blob: Blob, maxDim = 1920, quality = 0.82): Promise<Blob> {
+    return new Promise(resolve => {
+      const img = new Image();
+      const url = URL.createObjectURL(blob);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+          else { width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(b => resolve(b || blob), 'image/jpeg', quality);
+      };
+      img.src = url;
+    });
   }
 
   goBack() {

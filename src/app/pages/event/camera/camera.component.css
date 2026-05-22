@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
 
-    :host { display: block; height: 100vh; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+    :host { display: block; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
-    .camera-page { height: 100vh; position: relative; }
+    .camera-page { height: 100dvh; position: relative; }
 
-    .camera-view, .preview-view { height: 100vh; position: relative; overflow: hidden; }
+    .camera-view { height: 100dvh; position: relative; overflow: hidden; }
 
     .video-feed {
       width: 100%; height: 100%;
@@ -12,10 +11,10 @@
     }
     .video-feed.mirror { transform: scaleX(-1); }
 
-    .camera-top, .preview-top {
+    .camera-top {
       position: absolute; top: 0; left: 0; right: 0;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1rem 1.25rem;
+      padding: max(1rem, env(safe-area-inset-top)) 1.25rem 1rem;
       background: linear-gradient(to bottom, rgba(247,245,240,0.96), transparent);
     }
 
@@ -32,7 +31,7 @@
 
     .camera-bottom {
       position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 2rem 2rem 3rem;
+      padding: 2rem 2rem max(3rem, calc(1.5rem + env(safe-area-inset-bottom)));
       background: linear-gradient(to top, rgba(247,245,240,0.98), transparent);
       display: flex; align-items: center; justify-content: center;
       gap: 2.5rem;
@@ -61,8 +60,8 @@
     .upload-label svg { width: 28px; height: 28px; }
 
 
-    .no-camera, .uploading-view, .success-view {
-      height: 100vh; display: flex; flex-direction: column;
+    .no-camera {
+      height: 100dvh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       padding: 2rem; text-align: center; gap: 1rem;
     }
@@ -78,68 +77,40 @@
       cursor: pointer; margin-top: 0.5rem;
     }
 
-    .preview-img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
 
-    .preview-bottom {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 1.5rem 1.5rem 3rem;
-      background: linear-gradient(to top, rgba(247,245,240,0.96), transparent);
-      display: flex; flex-direction: column; gap: 0.75rem;
-    }
-
-    .name-field input {
-      width: 100%; background: #ffffff;
-      border: 1px solid rgba(29,28,24,0.12); border-radius: 10px;
-      padding: 0.75rem 1rem; color: var(--text);
-      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none;
-      box-sizing: border-box;
-    }
-    .name-field input::placeholder { color: var(--text-muted-soft); }
-
-    .btn-send {
-      display: flex; align-items: center; justify-content: center; gap: 0.625rem;
-      width: 100%; background: #ffffff; color: var(--text);
-      border: none; padding: 1rem; border-radius: 100px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .btn-send:hover { transform: translateY(-1px); }
-    .btn-send svg { width: 16px; height: 16px; }
-
-    .upload-anim {
-      position: relative; width: 80px; height: 80px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .upload-ring {
-      position: absolute; inset: 0; border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-top-color: white;
-      animation: spin 1s linear infinite;
-    }
-    .upload-anim svg { width: 28px; height: 28px; color: rgba(255,255,255,0.7); }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .uploading-view p { color: rgba(255,255,255,0.5); margin: 0; }
-
-    .success-anim svg { width: 72px; height: 72px; }
-    .success-view h2 { margin: 0; font-weight: 400; font-size: 1.5rem; }
-    .success-view p { color: rgba(255,255,255,0.5); margin: 0; font-size: 0.9rem; }
-
-    .success-actions { display: flex; flex-direction: column; gap: 0.75rem; width: 100%; max-width: 300px; margin-top: 0.5rem; }
-
-    .btn-another {
-      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-      background: white; color: #000; border: none;
-      padding: 1rem; border-radius: 100px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer;
+    /* Upload queue badge */
+    .upload-badge {
+      position: absolute;
+      bottom: max(5.5rem, calc(4rem + env(safe-area-inset-bottom)));
+      left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 0.4rem;
+      background: rgba(29,28,24,0.82); backdrop-filter: blur(8px);
+      color: rgba(255,255,255,0.9);
+      padding: 0.4rem 0.875rem 0.4rem 0.5rem;
+      border-radius: 100px; font-size: 0.8rem; font-weight: 500;
+      animation: fadeIn 0.2s ease;
     }
-    .btn-another svg { width: 16px; height: 16px; }
-
-    .btn-gallery-link {
-      background: none; border: 1px solid rgba(255,255,255,0.25);
-      color: rgba(255,255,255,0.75); padding: 1rem; border-radius: 100px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer;
+    .upload-badge svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .badge-ring {
+      position: absolute; inset: -3px; border-radius: 100px;
+      border: 2px solid transparent;
+      border-top-color: rgba(255,255,255,0.4);
+      animation: spin 1s linear infinite;
     }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(4px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+    /* Error toast */
+    .upload-toast {
+      position: absolute; bottom: max(5.5rem, calc(4rem + env(safe-area-inset-bottom)));
+      left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1rem; border-radius: 100px;
+      font-size: 0.82rem; font-weight: 500; white-space: nowrap;
+      animation: fadeIn 0.2s ease;
+    }
+    .upload-toast.error {
+      background: rgba(220,53,69,0.9); color: #fff;
+    }
+    .upload-toast svg { width: 15px; height: 15px; flex-shrink: 0; }

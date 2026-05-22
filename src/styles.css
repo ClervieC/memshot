@@ -1,8 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@300&family=DM+Sans:wght@400;500&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
+}
+
+button, input, textarea, select {
+  touch-action: manipulation;
 }
 
 :root {

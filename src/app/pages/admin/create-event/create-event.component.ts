@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../../../services/event.service';
 import { QrService } from '../../../services/qr.service';
+import { AuthService } from '../../../services/auth.service';
 import { LangSwitcherComponent } from "src/app/shared/lang-switcher/lang-switcher.component";
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -28,8 +29,13 @@ export class CreateEventComponent {
 
   router: Router;
 
-  constructor(router: Router, private eventService: EventService, private qrService: QrService, private translate: TranslateService) {
+  constructor(router: Router, private eventService: EventService, private qrService: QrService, private translate: TranslateService, private authService: AuthService) {
     this.router = router;
+  }
+
+  async logout() {
+    await this.authService.logout();
+    this.router.navigate(['/']);
   }
 
   async createEvent() {

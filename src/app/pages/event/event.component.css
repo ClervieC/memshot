@@ -1,13 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap');
 
     :host { display: block; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
     .event-page {
-      min-height: 100vh;
+      min-height: 100svh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 4.5rem 1.25rem 2rem;
       position: relative;
       overflow: hidden;
     }
@@ -124,3 +123,10 @@
     .photo-count svg { width: 14px; height: 14px; }
 
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 390px) {
+      .event-page { padding: 4rem 1rem 1.5rem; }
+      h1 { font-size: 1.9rem; }
+      .password-form { padding: 1.25rem; }
+      .brand { margin-bottom: 2rem; }
+    }

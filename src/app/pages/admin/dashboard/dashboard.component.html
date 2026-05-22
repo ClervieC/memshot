@@ -1,132 +1,186 @@
 <div class="dashboard">
-      <header>
-        <div class="logo">
-          <div class="dot"></div>
-          <span>{{ 'APP_NAME' | translate }}</span>
-        </div>
-        <div class="header-actions">
-          <button class="btn-new" (click)="router.navigate(['/admin/create-event'])">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 5v14M5 12h14"/>
-            </svg>
-            {{ 'DASHBOARD.NEW_EVENT' | translate}}
-          </button>
-          <button class="btn-logout" (click)="logout()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-          </button>
-          <div>
-            <app-lang-switcher></app-lang-switcher>
-          </div>
-        </div>
-      </header>
+  <header>
+    <div class="logo">
+      <div class="dot"></div>
+      <span>{{ 'APP_NAME' | translate }}</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-new" (click)="router.navigate(['/admin/create-event'])">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        <span class="btn-new-label">{{ 'DASHBOARD.NEW_EVENT' | translate}}</span>
+      </button>
+      <button class="btn-logout" (click)="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+      <div>
+        <app-lang-switcher></app-lang-switcher>
+      </div>
+    </div>
+  </header>
 
-      <main>
-        <div class="page-title">
-          <h1>{{ 'DASHBOARD.TITLE' | translate }} <em> {{ 'DASHBOARD.TITLE_EM' | translate }}</em></h1>
-          <span class="count">{{ events().length }} {{ 'DASHBOARD.EVENTS_COUNT' | translate }}{{ events().length !== 1 ? 's' : '' }}</span>
+  <main>
+    <div class="page-title">
+      <h1>{{ 'DASHBOARD.TITLE' | translate }} <em> {{ 'DASHBOARD.TITLE_EM' | translate }}</em></h1>
+      <span class="count">{{ events().length }} {{ 'DASHBOARD.EVENTS_COUNT' | translate }}{{ events().length !== 1 ? 's' : '' }}</span>
+    </div>
+
+    <div class="loading" *ngIf="loading()">
+      <div class="spin"></div>
+    </div>
+
+    <div class="empty" *ngIf="!loading() && events().length === 0">
+      <div class="empty-icon">
+        <svg viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M16 28s2-4 8-4 8 4 8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="18" cy="20" r="2" fill="currentColor"/>
+          <circle cx="30" cy="20" r="2" fill="currentColor"/>
+        </svg>
+      </div>
+      <p>{{ 'DASHBOARD.EMPTY_TEXT' | translate }}</p>
+      <button class="btn-create-first" (click)="router.navigate(['/admin/create-event'])">
+        {{ 'DASHBOARD.CREATE_FIRST' | translate }}
+      </button>
+    </div>
+
+    <div class="events-grid" *ngIf="!loading() && events().length > 0">
+      <div class="event-card" *ngFor="let event of events()">
+
+        <!-- Red delete zone revealed when card is swiped left -->
+        <div class="delete-reveal" (click)="deleteEvent(event, $event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
         </div>
 
-        <div class="loading" *ngIf="loading()">
-          <div class="spin"></div>
-        </div>
+        <!-- Swipeable content wrapper -->
+        <div class="card-swipe"
+          [class.is-open]="swipedEventId() === event.id"
+          (touchstart)="onCardTouchStart(event.id, $event)"
+          (touchmove)="onCardTouchMove(event.id, $event)"
+          (touchend)="onCardTouchEnd(event.id, $event)">
 
-        <div class="empty" *ngIf="!loading() && events().length === 0">
-          <div class="empty-icon">
-            <svg viewBox="0 0 48 48" fill="none">
-              <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M16 28s2-4 8-4 8 4 8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <circle cx="18" cy="20" r="2" fill="currentColor"/>
-              <circle cx="30" cy="20" r="2" fill="currentColor"/>
-            </svg>
-          </div>
-          <p>{{ 'DASHBOARD.EMPTY_TEXT' | translate }}</p>
-          <button class="btn-create-first" (click)="router.navigate(['/admin/create-event'])">
-            {{ 'DASHBOARD.CREATE_FIRST' | translate }}
-          </button>
-        </div>
-
-        <div class="events-grid" *ngIf="!loading() && events().length > 0">
-          <div class="event-card" *ngFor="let event of events()">
-            <div class="event-card-inner" (click)="openEvent(event)">
-              <div class="event-meta">
-                <span class="event-date">{{ toDate(event.date) | date: 'dd MMM yyyy' }}</span>
+          <div class="event-card-inner" (click)="openEvent(event)">
+            <div class="event-meta">
+              <span class="event-date">{{ toDate(event.date) | date: 'dd MMM yyyy' }}</span>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <span class="event-live-badge" *ngIf="!event.closed">
+                  <span class="live-dot"></span>{{ 'GALLERY.LIVE' | translate }}
+                </span>
+                <span class="event-closed-badge" *ngIf="event.closed">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  {{ 'GALLERY.CLOSED' | translate }}
+                </span>
                 <span class="event-count">{{ event.photoCount }} {{'DASHBOARD.PHOTO_COUNT' | translate}}{{ event.photoCount !== 1 ? 's' : '' }}</span>
               </div>
-              <h3>{{ event.name }}</h3>
-              <p *ngIf="event.description" class="event-desc">{{ event.description }}</p>
             </div>
-            <div class="event-footer">
-              <span class="event-id">ID: {{ event.id }}</span>
-              <div class="event-actions">
-                <button class="btn-qr" (click)="showQr(event, $event)">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                    <rect x="3" y="14" width="7" height="7"/>
-                    <path d="M14 14h1v1h-1zM18 14h3v1h-3zM14 18h1v3h-1zM16 16h2v2h-2zM19 17h2v4h-2zM17 19h1v2h-1z"/>
-                  </svg>
-                  {{ 'DASHBOARD.QR_CODE' | translate }}
-                </button>
-                <button class="btn-arrow" (click)="openEvent(event)">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
 
-      <!-- QR Modal -->
-      <div class="modal-backdrop" *ngIf="qrModal()" (click)="closeQr()">
-        <div class="modal" (click)="$event.stopPropagation()">
-          <div class="modal-header">
-            <div>
-              <h2>{{ qrModal()!.event.name }}</h2>
-              <span class="modal-date">{{ toDate(qrModal()!.event.date) | date: 'dd MMMM yyyy' }}</span>
-            </div>
-            <button class="modal-close" (click)="closeQr()">
+            <!-- Delete button anchored top-right (desktop) -->
+            <button class="btn-delete-corner" (click)="deleteEvent(event, $event)" title="Supprimer">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
               </svg>
             </button>
+
+            <h3>{{ event.name }}</h3>
+            <p *ngIf="event.description" class="event-desc">{{ event.description }}</p>
           </div>
 
-          <div class="modal-qr">
-            <div class="qr-loading" *ngIf="qrModal()!.loading">
-              <div class="spin dark"></div>
+          <div class="event-footer">
+            <span class="event-id">ID: {{ event.id }}</span>
+            <div class="event-actions">
+              <button class="btn-lock" (click)="toggleClosed(event, $event)" [title]="event.closed ? 'Rouvrir' : 'Fermer'">
+                <svg *ngIf="event.closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <svg *ngIf="!event.closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+                </svg>
+              </button>
+              <button class="btn-qr" (click)="showQr(event, $event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                  <rect x="3" y="14" width="7" height="7"/>
+                  <path d="M14 14h1v1h-1zM18 14h3v1h-3zM14 18h1v3h-1zM16 16h2v2h-2zM19 17h2v4h-2zM17 19h1v2h-1z"/>
+                </svg>
+                {{ 'DASHBOARD.QR_CODE' | translate }}
+              </button>
+              <button class="btn-arrow" (click)="openEvent(event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
             </div>
-            <img *ngIf="!qrModal()!.loading" [src]="qrModal()!.dataUrl" alt="QR Code" />
           </div>
 
-          <div class="modal-info">
-            <div class="info-row">
-              <span class="info-label">{{'DASHBOARD.PARTICIPANT_PASSWORD' | translate}}</span>
-              <span class="info-value pw">{{ qrModal()!.event.password }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">{{'DASHBOARD.DIRECT_LINK' | translate}}</span>
-              <div class="url-row">
-                <span class="info-value url">{{ getEventUrl(qrModal()!.event.id) }}</span>
-                <button class="btn-copy" (click)="copyUrl(qrModal()!.event.id)">
-                  {{ copied() ? '✓' : 'DASHBOARD.COPY' | translate }}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button class="btn-download" (click)="downloadQr()" [disabled]="qrModal()!.loading">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            {{ 'DASHBOARD.DOWNLOAD_QR' | translate }}
-          </button>
         </div>
       </div>
     </div>
+  </main>
+
+  <!-- QR Modal -->
+  <div class="modal-backdrop" *ngIf="qrModal()" (click)="closeQr()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h2>{{ qrModal()!.event.name }}</h2>
+          <span class="modal-date">{{ toDate(qrModal()!.event.date) | date: 'dd MMMM yyyy' }}</span>
+        </div>
+        <button class="modal-close" (click)="closeQr()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-qr">
+        <div class="qr-loading" *ngIf="qrModal()!.loading">
+          <div class="spin dark"></div>
+        </div>
+        <img *ngIf="!qrModal()!.loading" [src]="qrModal()!.dataUrl" alt="QR Code" />
+      </div>
+
+      <div class="modal-info">
+        <div class="info-row">
+          <span class="info-label">{{'DASHBOARD.PARTICIPANT_PASSWORD' | translate}}</span>
+          <span class="info-value pw">{{ qrModal()!.event.password }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">{{'DASHBOARD.DIRECT_LINK' | translate}}</span>
+          <div class="url-row">
+            <span class="info-value url">{{ getEventUrl(qrModal()!.event.id) }}</span>
+            <button class="btn-copy" (click)="copyUrl(qrModal()!.event.id)">
+              {{ copied() ? '✓' : ('DASHBOARD.COPY' | translate) }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-download" (click)="downloadQr()" [disabled]="qrModal()!.loading">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        {{ 'DASHBOARD.DOWNLOAD_QR' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

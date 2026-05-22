@@ -1,13 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;1,300&family=DM+Sans:wght@300;400;500&display=swap');
 
     :host { display: block; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
     .login-page {
-      min-height: 100vh;
+      min-height: 100svh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 5rem 1.5rem 2rem;
     }
 
     .back {
@@ -96,7 +95,7 @@
       padding: 0.875rem 1rem;
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;
       outline: none;
       transition: border-color 0.2s;
       box-sizing: border-box;
@@ -147,3 +146,9 @@
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 390px) {
+      h2 { font-size: 2rem; margin-bottom: 1.5rem; }
+      .brand { margin-bottom: 2rem; }
+      .back { top: 1rem; left: 1rem; width: 36px; height: 36px; }
+    }

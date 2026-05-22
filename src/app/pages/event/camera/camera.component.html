@@ -1,120 +1,79 @@
 <div class="camera-page">
-      <!-- Camera view -->
-      <div class="camera-view" *ngIf="!previewUrl() && !uploading()">
-        <video #videoEl autoplay playsinline muted class="video-feed" [class.mirror]="facingMode === 'user'"></video>
 
-        <div class="camera-top">
-          <button class="icon-btn" (click)="goBack()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 12H5M12 5l-7 7 7 7"/>
-            </svg>
-          </button>
-          <span class="camera-title">{{ eventName() }}</span>
-          <button class="icon-btn" (click)="switchCamera()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 4v6h6"/>
-              <path d="M23 20v-6h-6"/>
-              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
-            </svg>
-          </button>
-        </div>
+  <!-- Camera view -->
+  <div class="camera-view" *ngIf="!cameraError()">
+    <video #videoEl autoplay playsinline muted class="video-feed" [class.mirror]="facingMode === 'user'"></video>
 
-        <div class="camera-bottom">
-          <button class="capture-btn" (click)="capture()">
-            <div class="capture-inner"></div>
-          </button>
-
-          <div class="upload-alt">
-            <label class="upload-label">
-              <input type="file" accept="image/*" (change)="onFileSelect($event)" hidden />
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-              Galerie
-            </label>
-          </div>
-        </div>
-
-        <canvas #canvasEl style="display:none"></canvas>
-      </div>
-
-      <!-- Camera not available -->
-      <div class="no-camera" *ngIf="cameraError()">
-        <svg viewBox="0 0 64 64" fill="none">
-          <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="1.5"/>
-          <line x1="48" y1="16" x2="16" y2="48" stroke="currentColor" stroke-width="1.5"/>
-          <path d="M20 24v16h24V24l-4-4H24z" stroke="currentColor" stroke-width="1.5"/>
+    <div class="camera-top">
+      <button class="icon-btn" (click)="goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
         </svg>
-        <h3>Caméra inaccessible</h3>
-        <p>Autorisez l'accès à la caméra ou choisissez depuis votre galerie</p>
-        <label class="btn-gallery">
+      </button>
+      <span class="camera-title">{{ eventName() }}</span>
+      <button class="icon-btn" (click)="switchCamera()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 4v6h6"/>
+          <path d="M23 20v-6h-6"/>
+          <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="camera-bottom">
+      <button class="capture-btn" (click)="capture()">
+        <div class="capture-inner"></div>
+      </button>
+
+      <div class="upload-alt">
+        <label class="upload-label">
           <input type="file" accept="image/*" (change)="onFileSelect($event)" hidden />
-          Choisir depuis la galerie
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          Galerie
         </label>
       </div>
-
-      <!-- Preview after capture -->
-      <div class="preview-view" *ngIf="previewUrl() && !uploading()">
-        <img [src]="previewUrl()" alt="Aperçu" class="preview-img" />
-
-        <div class="preview-top">
-          <button class="icon-btn" (click)="cancelPreview()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-
-        <div class="preview-bottom">
-          <div class="name-field">
-            <input type="text" [(ngModel)]="uploaderName" placeholder="Votre prénom (facultatif)" />
-          </div>
-          <button class="btn-send" (click)="upload()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="22" y1="2" x2="11" y2="13"/>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
-            Envoyer la photo
-          </button>
-        </div>
-      </div>
-
-      <!-- Upload progress -->
-      <div class="uploading-view" *ngIf="uploading()">
-        <div class="upload-anim">
-          <div class="upload-ring"></div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
-        </div>
-        <p>Envoi en cours…</p>
-      </div>
-
-      <!-- Upload success -->
-      <div class="success-view" *ngIf="uploaded()">
-        <div class="success-anim">
-          <svg viewBox="0 0 48 48" fill="none">
-            <circle cx="24" cy="24" r="20" stroke="#90e0a0" stroke-width="2"/>
-            <polyline points="14 24 22 32 34 16" stroke="#90e0a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h2>Photo envoyée !</h2>
-        <p>Elle apparaît maintenant dans la galerie</p>
-        <div class="success-actions">
-          <button class="btn-another" (click)="resetForAnotherPhoto()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-            Prendre une autre photo
-          </button>
-          <button class="btn-gallery-link" (click)="goToGallery()">
-            Voir la galerie
-          </button>
-        </div>
-      </div>
     </div>
+
+    <!-- Upload queue badge -->
+    <div class="upload-badge" *ngIf="uploadQueue() > 0">
+      <div class="badge-ring"></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      <span>{{ uploadQueue() }}</span>
+    </div>
+
+    <!-- Error toast -->
+    <div class="upload-toast error" *ngIf="uploadError()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Erreur d'envoi, réessayez
+    </div>
+
+    <canvas #canvasEl style="display:none"></canvas>
+  </div>
+
+  <!-- Camera not available -->
+  <div class="no-camera" *ngIf="cameraError()">
+    <svg viewBox="0 0 64 64" fill="none">
+      <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="48" y1="16" x2="16" y2="48" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M20 24v16h24V24l-4-4H24z" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    <h3>Caméra inaccessible</h3>
+    <p>Autorisez l'accès à la caméra ou choisissez depuis votre galerie</p>
+    <label class="btn-gallery">
+      <input type="file" accept="image/*" (change)="onFileSelect($event)" hidden />
+      Choisir depuis la galerie
+    </label>
+  </div>
+
+</div>

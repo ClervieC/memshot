@@ -1,85 +1,246 @@
-<div class="gallery-page">
-      <header>
-        <div class="header-left">
-          <button class="icon-btn" (click)="goBack()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 12H5M12 5l-7 7 7 7"/>
-            </svg>
-          </button>
-          <div class="header-info" *ngIf="event()">
-            <span class="event-name">{{ event()!.name }}</span>
-            <span class="photo-count">{{ photos().length }} photo{{ photos().length !== 1 ? 's' : '' }}</span>
-          </div>
-        </div>
-
-        <div class="header-right">
-          <div class="live-badge" *ngIf="photos().length > 0">
-            <span class="live-dot"></span>
-            Live
-          </div>
-          <button class="btn-camera" (click)="goToCamera()" *ngIf="!isAdmin()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-          </button>
-          <button class="btn-dashboard" (click)="router.navigate(['/admin/dashboard'])" *ngIf="isAdmin()">
-            Dashboard
-          </button>
-        </div>
-      </header>
-
-      <div class="loading-state" *ngIf="loading()">
-        <div class="spin"></div>
-      </div>
-
-      <div class="empty-gallery" *ngIf="!loading() && photos().length === 0">
-        <div class="empty-icon">
-          <svg viewBox="0 0 64 64" fill="none">
-            <rect x="8" y="8" width="48" height="48" rx="8" stroke="currentColor" stroke-width="1.5"/>
-            <circle cx="22" cy="22" r="5" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M8 44l14-14 10 10 8-8 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<div class="gallery-page" [class.selecting]="selectionMode()" (touchstart)="onPageTouchStart($event)" (touchend)="onPageTouchEnd($event)">
+  <header>
+    <div class="header-left">
+      <button class="icon-btn" (click)="selectionMode() ? exitSelection() : goBack()">
+        <svg *ngIf="!selectionMode()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        <svg *ngIf="selectionMode()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="header-info" *ngIf="event() && !selectionMode()">
+        <span class="event-name">{{ event()!.name }}</span>
+        <div class="pwd-chip" (click)="copyPassword()">
+          <span class="pwd-label">{{ 'GALLERY.PASSWORD_LABEL' | translate }}</span>
+          <span>{{ event()!.password }}</span>
+          <svg *ngIf="!pwdCopied()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <svg *ngIf="pwdCopied()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
           </svg>
         </div>
-        <h3>Aucune photo encore</h3>
-        <p *ngIf="!isAdmin()">Soyez le premier à prendre une photo !</p>
-        <button class="btn-take-first" (click)="goToCamera()" *ngIf="!isAdmin()">
+      </div>
+      <span class="sel-header-count" *ngIf="selectionMode()">
+        {{ selectedIds().size }} / {{ photos().length }}
+      </span>
+    </div>
+
+    <div class="header-right">
+      <ng-container *ngIf="!selectionMode()">
+        <div class="live-badge" *ngIf="!event()?.closed">
+          <span class="live-dot"></span>
+          {{ 'GALLERY.LIVE' | translate }}
+        </div>
+        <div class="closed-badge" *ngIf="event()?.closed">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          {{ 'GALLERY.CLOSED' | translate }}
+        </div>
+        <button class="btn-camera" (click)="goToCamera()" *ngIf="!isAdmin() && !event()?.closed">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
             <circle cx="12" cy="13" r="4"/>
           </svg>
-          Prendre une photo
         </button>
-      </div>
-
-      <div class="photo-grid" *ngIf="photos().length > 0">
-        <div class="photo-item" *ngFor="let photo of photos()" (click)="openPhoto(photo)">
-          <img [src]="photo.url" [alt]="photo.uploaderName || 'Photo'" loading="lazy" />
-          <div class="photo-overlay">
-            <span class="uploader-name" *ngIf="photo.uploaderName">{{ photo.uploaderName }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Fab camera button -->
-      <button class="fab" (click)="goToCamera()" *ngIf="!isAdmin() && photos().length > 0">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-          <circle cx="12" cy="13" r="4"/>
-        </svg>
-      </button>
-
-      <!-- Lightbox -->
-      <div class="lightbox" *ngIf="lightboxPhoto()" (click)="closeLightbox()">
-        <button class="lb-close">
+        <!-- Download all -->
+        <button class="btn-dl-all" *ngIf="photos().length > 0" (click)="downloadAll()" [disabled]="bulkDownloading()" title="Télécharger tout">
+          <svg *ngIf="!bulkDownloading()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span class="btn-spin-sm" *ngIf="bulkDownloading()"></span>
+        </button>
+        <!-- Enter selection mode -->
+        <button class="btn-select-mode" *ngIf="photos().length > 0" (click)="enterSelection()" title="Sélectionner">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+            <rect x="2" y="2" width="9" height="9" rx="1"/>
+            <rect x="13" y="2" width="9" height="9" rx="1"/>
+            <rect x="2" y="13" width="9" height="9" rx="1"/>
+            <path d="M17 13l2 2 4-4"/>
           </svg>
         </button>
-        <img [src]="lightboxPhoto()!.url" (click)="$event.stopPropagation()" />
-        <div class="lb-caption" *ngIf="lightboxPhoto()!.uploaderName">
-          Par {{ lightboxPhoto()!.uploaderName }}
-        </div>
+        <button class="btn-share" (click)="shareGallery()" [title]="linkCopied() ? 'Lien copié !' : 'Partager'">
+          <svg *ngIf="!linkCopied()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          <svg *ngIf="linkCopied()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </button>
+        <button class="btn-logout" *ngIf="isAdmin()" (click)="logout()" title="Se déconnecter">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
+        <app-lang-switcher></app-lang-switcher>
+      </ng-container>
+
+      <!-- Selection mode actions in header -->
+      <ng-container *ngIf="selectionMode()">
+        <button class="sel-hdr-btn" (click)="selectedIds().size < photos().length ? selectAll() : deselectAll()">
+          {{ selectedIds().size < photos().length ? ('GALLERY.SELECT_ALL' | translate) : ('GALLERY.DESELECT_ALL' | translate) }}
+        </button>
+      </ng-container>
+    </div>
+  </header>
+
+  <div class="loading-state" *ngIf="loading()">
+    <div class="spin"></div>
+  </div>
+
+  <div class="empty-gallery" *ngIf="!loading() && photos().length === 0">
+    <div class="empty-icon">
+      <svg viewBox="0 0 64 64" fill="none">
+        <rect x="8" y="8" width="48" height="48" rx="8" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="22" cy="22" r="5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 44l14-14 10 10 8-8 14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h3>Aucune photo encore</h3>
+    <p *ngIf="!isAdmin()">Soyez le premier à prendre une photo !</p>
+    <button class="btn-take-first" (click)="goToCamera()" *ngIf="!isAdmin()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      Prendre une photo
+    </button>
+  </div>
+
+  <div class="photo-grid" *ngIf="photos().length > 0">
+    <div class="photo-item"
+      *ngFor="let photo of photos().slice(0, displayCount())"
+      [class.is-selected]="isSelected(photo)"
+      [class.in-selection]="selectionMode()"
+      (click)="onPhotoClick(photo)"
+      (touchstart)="onPhotoTouchStart(photo, $event)"
+      (touchend)="onPhotoTouchEnd()"
+      (touchmove)="onPhotoTouchMove()">
+
+      <!-- Selection checkbox -->
+      <div class="select-check" *ngIf="selectionMode()">
+        <svg *ngIf="isSelected(photo)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+
+      <img [src]="photo.url" [alt]="photo.uploaderName || 'Photo'" loading="lazy" />
+
+      <div class="photo-overlay" *ngIf="!selectionMode()">
+        <span class="uploader-name" *ngIf="photo.uploaderName">{{ photo.uploaderName }}</span>
+        <button class="photo-delete-btn" *ngIf="isAdmin()" (click)="deletePhoto(photo, $event)" title="Supprimer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+        </button>
       </div>
     </div>
+  </div>
+
+  <!-- Infinite scroll sentinel -->
+  <div #sentinel></div>
+
+  <!-- Admin close/reopen bar -->
+  <div class="admin-bar" *ngIf="isAdmin() && !selectionMode()">
+    <button class="btn-close-event" (click)="toggleClosed()" [disabled]="togglingClosed()">
+      <span class="btn-spin" *ngIf="togglingClosed()"></span>
+      <ng-container *ngIf="!togglingClosed()">
+        <svg *ngIf="event()?.closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <svg *ngIf="!event()?.closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+        </svg>
+        {{ (event()?.closed ? 'GALLERY.REOPEN_SUBMISSIONS' : 'GALLERY.CLOSE_SUBMISSIONS') | translate }}
+      </ng-container>
+    </button>
+  </div>
+
+  <!-- Fab camera button -->
+  <button class="fab" (click)="goToCamera()" *ngIf="!isAdmin() && photos().length > 0 && !event()?.closed && !selectionMode()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </svg>
+  </button>
+
+  <!-- Selection bottom bar -->
+  <div class="selection-bar" *ngIf="selectionMode()">
+    <button class="sel-action-btn" (click)="bulkDownload()" [disabled]="!selectedIds().size || bulkDownloading()" title="Télécharger la sélection">
+      <svg *ngIf="!bulkDownloading()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span class="btn-spin-sm" *ngIf="bulkDownloading()"></span>
+    </button>
+    <button class="sel-action-btn sel-action-delete" *ngIf="isAdmin()" (click)="bulkDelete()" [disabled]="!selectedIds().size" title="Supprimer la sélection">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        <path d="M10 11v6M14 11v6"/>
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" *ngIf="lightboxPhoto()" (click)="closeLightbox()"
+       (touchstart)="onLbTouchStart($event)" (touchend)="onLbTouchEnd($event)">
+    <button class="lb-delete" *ngIf="isAdmin()" (click)="deletePhoto(lightboxPhoto()!, $event)" title="Supprimer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        <path d="M10 11v6M14 11v6"/>
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+      </svg>
+    </button>
+    <button class="lb-close" (click)="closeLightbox()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <button class="lb-nav lb-prev" (click)="prevPhoto(); $event.stopPropagation()"
+            *ngIf="photos().indexOf(lightboxPhoto()!) > 0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+    <img [src]="lightboxPhoto()!.url" (click)="$event.stopPropagation()" />
+    <button class="lb-nav lb-next" (click)="nextPhoto(); $event.stopPropagation()"
+            *ngIf="photos().indexOf(lightboxPhoto()!) < photos().length - 1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </button>
+    <div class="lb-footer" (click)="$event.stopPropagation()">
+      <span class="lb-caption" *ngIf="lightboxPhoto()!.uploaderName">
+        {{ 'GALLERY.BY' | translate: { name: lightboxPhoto()!.uploaderName } }}
+      </span>
+      <div class="lb-actions">
+        <button class="lb-btn" (click)="downloadPhoto(lightboxPhoto()!, $event)" title="Télécharger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="backdrop" *ngIf="confirm.state()" (click)="confirm.cancel()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>{{ confirm.state()!.title | translate: confirm.state()!.titleParams }}</h3>
+    <p *ngIf="confirm.state()!.message">{{ confirm.state()!.message | translate: confirm.state()!.messageParams }}</p>
+    <div class="actions">
+      <button class="btn-cancel" (click)="confirm.cancel()">
+        {{ (confirm.state()!.cancelLabel || 'CONFIRM.CANCEL') | translate }}
+      </button>
+      <button class="btn-confirm" [class.destructive]="confirm.state()!.destructive" (click)="confirm.accept()">
+        {{ (confirm.state()!.confirmLabel || 'CONFIRM.DELETE') | translate }}
+      </button>
+    </div>
+  </div>
+</div>

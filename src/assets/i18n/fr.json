@@ -1,5 +1,18 @@
 {
   "APP_NAME": "Memshot",
+  "CONFIRM": {
+    "BULK_DELETE_TITLE": "Supprimer {{count}} photos ?",
+    "BULK_DELETE_MSG": "Cette action est irréversible.",
+    "CANCEL": "Annuler",
+    "DELETE": "Supprimer",
+    "CLOSE": "Fermer",
+    "DELETE_PHOTO_TITLE": "Supprimer la photo ?",
+    "DELETE_PHOTO_MSG": "Photo de {{name}}",
+    "CLOSE_SUBMISSIONS_TITLE": "Fermer les dépôts ?",
+    "CLOSE_SUBMISSIONS_MSG": "Les participants de « {{name}} » ne pourront plus ajouter de photos.",
+    "DELETE_EVENT_TITLE": "Supprimer « {{name}} » ?",
+    "DELETE_EVENT_MSG": "Cette action est irréversible. Toutes les photos seront supprimées."
+  },
   "HOME": {
     "TITLE": "Capturez",
     "TITLE_EM": "l'instant",
@@ -10,7 +23,11 @@
     "ORGANIZER_SPACE": "Espace organisateur",
     "ERROR_EMPTY": "Entre le code de ton événement.",
     "ERROR_NOT_FOUND": "Code introuvable. Vérifie et réessaie.",
-    "ERROR_GENERIC": "Une erreur est survenue. Réessaie."
+    "ERROR_GENERIC": "Une erreur est survenue. Réessaie.",
+    "MODAL_TITLE": "Comment tu t'appelles ?",
+    "MODAL_SUBTITLE": "Ton prénom apparaîtra sur tes photos. C'est facultatif.",
+    "MODAL_PLACEHOLDER": "Ton prénom",
+    "MODAL_BTN": "Accéder à l'événement"
   },
   "LOGIN": {
     "TITLE": "Connexion",
@@ -88,11 +105,20 @@
     "PHOTOS_COUNT_ONE": "{{count}} photo",
     "PHOTOS_COUNT_OTHER": "{{count}} photos",
     "LIVE": "Live",
+    "CLOSED": "Fermé",
+    "CLOSE_SUBMISSIONS": "Fermer les dépôts",
+    "REOPEN_SUBMISSIONS": "Rouvrir les dépôts",
+    "PASSWORD_LABEL": "Code",
     "EMPTY_TITLE": "Aucune photo encore",
     "EMPTY_SUBTITLE": "Soyez le premier à prendre une photo !",
     "TAKE_PHOTO": "Prendre une photo",
     "DASHBOARD": "Dashboard",
-    "BY": "Par {{name}}"
+    "BY": "Par {{name}}",
+    "SELECT_ALL": "Tout",
+    "DESELECT_ALL": "Aucun",
+    "SEL_DOWNLOAD": "Sélection",
+    "SEL_DOWNLOAD_ALL": "Toutes",
+    "SEL_DELETE": "Supprimer"
   },
   "CAMERA": {
     "NO_CAMERA_TITLE": "Caméra inaccessible",

@@ -1,4 +1,7 @@
 <div class="event-page">
+      <div style="position:fixed;top:1rem;right:1rem;">
+        <app-lang-switcher></app-lang-switcher>
+      </div>
       <div class="bg-glow"></div>
 
       <div class="loading-state" *ngIf="loading()">
@@ -6,9 +9,9 @@
       </div>
 
       <div class="not-found" *ngIf="!loading() && !event()">
-        <h2>Événement introuvable</h2>
-        <p>Ce lien n'est pas valide ou l'événement n'existe plus.</p>
-        <button (click)="router.navigate(['/'])">Retour à l'accueil</button>
+        <h2>{{ 'EVENT.NOT_FOUND_TITLE' | translate }}</h2>
+        <p>{{ 'EVENT.NOT_FOUND_DESC' | translate }}</p>
+        <button (click)="router.navigate(['/'])">{{ 'EVENT.BACK_HOME' | translate }}</button>
       </div>
 
       <div class="event-entry" *ngIf="!loading() && event()">
@@ -33,14 +36,14 @@
         </div>
 
         <div class="password-form">
-          <h3>Accéder à l'événement</h3>
-          <p class="pw-hint">Entrez le mot de passe fourni par l'organisateur</p>
+          <h3>{{ 'EVENT.ACCESS_TITLE' | translate }}</h3>
+          <p class="pw-hint">{{ 'EVENT.ACCESS_HINT' | translate }}</p>
 
           <div class="pw-field">
             <input
               type="password"
               [(ngModel)]="password"
-              placeholder="Mot de passe"
+              [placeholder]="'EVENT.PASSWORD_PLACEHOLDER' | translate"
               (keyup.enter)="enter()"
               [class.shake]="shaking()"
             />
@@ -50,7 +53,7 @@
 
           <button class="btn-enter" (click)="enter()" [disabled]="entering()">
             <span *ngIf="!entering()">
-              Entrer
+              {{ 'EVENT.ENTER_BTN' | translate }}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
@@ -65,7 +68,7 @@
             <circle cx="8.5" cy="8.5" r="1.5"/>
             <polyline points="21 15 16 10 5 21"/>
           </svg>
-          {{ event()!.photoCount }} photo{{ event()!.photoCount !== 1 ? 's' : '' }} partagée{{ event()!.photoCount !== 1 ? 's' : '' }}
+          {{ (event()!.photoCount !== 1 ? 'EVENT.PHOTOS_SHARED_OTHER' : 'EVENT.PHOTOS_SHARED_ONE') | translate: { count: event()!.photoCount } }}
         </div>
       </div>
     </div>

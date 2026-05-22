@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../../services/event.service';
 import { Event } from '../../models/event.model';
+import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LangSwitcherComponent, TranslateModule],
   templateUrl: './event.component.html',
   styleUrl: './event.component.css'
 })
@@ -24,7 +26,8 @@ export class EventComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public router: Router,
-    private eventService: EventService
+    private eventService: EventService,
+    private translate: TranslateService
   ) {}
 
   async ngOnInit() {
@@ -47,7 +50,7 @@ export class EventComponent implements OnInit {
 
   async enter() {
     if (!this.password) {
-      this.error.set('Entrez le mot de passe.');
+      this.error.set(this.translate.instant('EVENT.ERROR_EMPTY'));
       return;
     }
 
@@ -61,7 +64,7 @@ export class EventComponent implements OnInit {
         sessionStorage.setItem(`event_${this.eventId}`, 'true');
         this.router.navigate(['/event', this.eventId, 'gallery']);
       } else {
-        this.error.set('Mot de passe incorrect.');
+        this.error.set(this.translate.instant('EVENT.ERROR_WRONG'));
         this.shaking.set(true);
         setTimeout(() => this.shaking.set(false), 500);
       }

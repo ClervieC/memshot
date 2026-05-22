@@ -1,14 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
 
     :host {
-      display: block; min-height: 100vh;
+      display: block; min-height: 100svh;
       background: var(--bg); color: var(--text);
-      font-family: 'DM Sans', sans-serif; overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
     }
 
     .home {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; padding: 2.5rem 2rem; position: relative;
+      min-height: 100svh; display: flex; flex-direction: column;
+      justify-content: center; padding: 2.5rem 1.5rem; position: relative;
     }
 
     .bg-shapes { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
@@ -25,7 +24,7 @@
       margin-bottom: 2.5rem; color: var(--text);
       font-size: 1.2rem; font-weight: 500; letter-spacing: 0.05em;
     }
-    .logo-icon { width: 32px; height: 32px; color: var(--accent); }
+    .logo-icon { width: 50px; height: 50px; color: var(--accent); }
 
     h1 {
       font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 300;
@@ -105,6 +104,63 @@
         align-items: center; 
         justify-content: center;
     }
+
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(29,28,24,0.4); backdrop-filter: blur(8px);
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 100; animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: var(--bg); border-radius: 24px 24px 0 0;
+      padding: 2rem 1.75rem 2.5rem; width: 100%; max-width: 480px;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    @media (max-width: 390px) {
+      .home { padding: 2rem 1.25rem; }
+      h1 { font-size: 2.5rem; }
+      .logo { margin-bottom: 2rem; }
+      .subtitle { font-size: 0.85rem; margin-bottom: 1.5rem; }
+    }
+
+    @media (min-width: 768px) {
+      .modal-backdrop { align-items: center; }
+      .modal { border-radius: 24px; max-width: 400px; padding: 2.25rem; }
+    }
+
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(29,28,24,0.06); border: none;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); cursor: pointer; transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(29,28,24,0.12); }
+    .modal-close svg { width: 14px; height: 14px; }
+    .modal { position: relative; }
+
+    .modal h3 { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 300; margin: 0; }
+    .modal p { color: var(--text-muted); font-size: 0.875rem; margin: 0 0 0.5rem; }
+    .modal input {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(29,28,24,0.12); border-radius: 14px;
+    }
+    .modal input:focus { border-color: rgba(29,28,24,0.25); }
+
+    .btn-confirm {
+      display: flex; align-items: center; justify-content: center; gap: 0.625rem;
+      background: #ffffff; color: var(--text); border: none;
+      padding: 1rem; border-radius: 14px; margin-top: 0.25rem;
+      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(29,28,24,0.08); }
+    .btn-confirm svg { width: 18px; height: 18px; }
 
     @media (min-width: 768px) {
       .home { padding: 3rem; align-items: center; }

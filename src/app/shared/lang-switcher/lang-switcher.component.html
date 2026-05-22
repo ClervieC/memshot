@@ -1,16 +1,19 @@
-<div class="lang-dropdown" [class.open]="open" (clickOutside)="open = false">
+<div class="lang-dropdown" [class.open]="open">
   <button class="lang-btn" (click)="open = !open">
-    <span>{{ langService.currentLang() === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN' }}</span>
+    <img [src]="langService.currentLang() === 'fr' ? 'https://flagcdn.com/fr.svg' : 'https://flagcdn.com/gb.svg'" class="flag" [alt]="langService.currentLang()" />
+    <span>{{ langService.currentLang() === 'fr' ? 'FR' : 'EN' }}</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <polyline points="6 9 12 15 18 9"/>
     </svg>
   </button>
   <div class="lang-menu" *ngIf="open">
     <button class="lang-option" [class.active]="langService.currentLang() === 'fr'" (click)="select('fr')">
-      🇫🇷 Français
+      <img src="https://flagcdn.com/fr.svg" class="flag" alt="FR" />
+      Français
     </button>
     <button class="lang-option" [class.active]="langService.currentLang() === 'en'" (click)="select('en')">
-      🇬🇧 English
+      <img src="https://flagcdn.com/gb.svg" class="flag" alt="EN" />
+      English
     </button>
   </div>
 </div>

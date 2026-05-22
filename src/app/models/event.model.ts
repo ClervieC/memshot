@@ -3,11 +3,13 @@ export interface Event {
   name: string;
   description?: string;
   password: string;
+  passwordHash?: string;
   organizerId: string;
   createdAt: Date;
   date: Date;
   photoCount: number;
   coverUrl?: string;
+  closed?: boolean;
 }
 
 export interface Photo {
