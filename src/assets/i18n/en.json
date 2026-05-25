@@ -151,7 +151,9 @@
     "DELETE_SELECTION": "Delete selection",
     "DELETE": "Delete",
     "DELETE_ERROR": "Deletion failed. Please try again.",
-    "SLIDESHOW": "Slideshow"
+    "SLIDESHOW": "Slideshow",
+    "SET_COVER": "Set as cover",
+    "COVER_SET": "Cover updated"
   },
   "CAMERA": {
     "NO_CAMERA_TITLE": "Camera unavailable",

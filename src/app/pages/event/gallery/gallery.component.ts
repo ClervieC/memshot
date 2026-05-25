@@ -22,7 +22,6 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
   loading = signal(true);
   isAdmin = signal(false);
   lightboxPhoto = signal<Photo | null>(null);
-  pwdCopied = signal(false);
   linkCopied = signal(false);
   togglingClosed = signal(false);
   displayCount = signal(30);
@@ -33,6 +32,9 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedPhotos = computed(() => this.photos().filter(p => this.selectedIds().has(p.id)));
   bulkDownloading = signal(false);
   deleteError = signal(false);
+
+  settingCover = signal(false);
+  coverSetSuccess = signal(false);
 
   showHeaderMenu = signal(false);
   showHelp = signal(false);
@@ -61,8 +63,6 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get('eventId') || '';
-    const adminQuery = this.route.snapshot.queryParamMap.get('admin');
-
     const sessionAuth = sessionStorage.getItem(`event_${this.eventId}`);
     const currentUser = this.authService.getCurrentUser();
 
@@ -71,14 +71,10 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    if (currentUser || adminQuery === 'true') {
-      const event = await this.eventService.getEvent(this.eventId);
-      if (event && currentUser && event.organizerId === currentUser.uid) {
-        this.isAdmin.set(true);
-      }
-    }
-
     const event = await this.eventService.getEvent(this.eventId);
+    if (event && currentUser && event.organizerId === currentUser.uid) {
+      this.isAdmin.set(true);
+    }
     this.event.set(event);
     this.loading.set(false);
 
@@ -95,8 +91,6 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     }, { rootMargin: '300px' });
     this.scrollObserver.observe(this.sentinelRef.nativeElement);
   }
-
-  // ── Selection ──────────────────────────────────────────────
 
   enterSelection(photo?: Photo) {
     this.selectionMode.set(true);
@@ -155,8 +149,6 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     clearTimeout(this.longPressTimer);
   }
 
-  // ── Bulk actions ───────────────────────────────────────────
-
   private async downloadZip(photos: Photo[], filename: string) {
     this.bulkDownloading.set(true);
     try {
@@ -208,14 +200,37 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     if (!ok) return;
     try {
+      const deletingCover = photos.some(p => this.isCover(p));
+      const deletedIds = new Set(photos.map(p => p.id));
       await Promise.all(photos.map(p => this.eventService.deletePhoto(this.eventId, p.id)));
+      if (deletingCover) {
+        const next = this.photos().find(p => !deletedIds.has(p.id));
+        const newUrl = next?.url ?? '';
+        await this.eventService.setCoverUrl(this.eventId, newUrl);
+        this.event.update(ev => ev ? { ...ev, coverUrl: newUrl } : ev);
+      }
       this.exitSelection();
     } catch {
       this.showDeleteError();
     }
   }
 
-  // ── Existing methods ───────────────────────────────────────
+  isCover(photo: Photo): boolean {
+    return !!this.event()?.coverUrl && photo.url === this.event()!.coverUrl;
+  }
+
+  async setCoverPhoto(photo: Photo) {
+    if (this.settingCover()) return;
+    this.settingCover.set(true);
+    try {
+      await this.eventService.setCoverUrl(this.eventId, photo.url);
+      this.event.update(ev => ev ? { ...ev, coverUrl: photo.url } : ev);
+      this.coverSetSuccess.set(true);
+      setTimeout(() => this.coverSetSuccess.set(false), 2000);
+    } finally {
+      this.settingCover.set(false);
+    }
+  }
 
   async toggleClosed() {
     const ev = this.event();
@@ -238,14 +253,6 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     } finally {
       this.togglingClosed.set(false);
     }
-  }
-
-  copyPassword() {
-    const pwd = this.event()?.password;
-    if (!pwd) return;
-    navigator.clipboard.writeText(pwd);
-    this.pwdCopied.set(true);
-    setTimeout(() => this.pwdCopied.set(false), 2000);
   }
 
   goBack() {
@@ -352,8 +359,15 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     if (!ok) return;
     try {
+      const wasCover = this.isCover(photo);
       await this.eventService.deletePhoto(this.eventId, photo.id);
       if (this.lightboxPhoto()?.id === photo.id) this.lightboxPhoto.set(null);
+      if (wasCover) {
+        const next = this.photos().find(p => p.id !== photo.id);
+        const newUrl = next?.url ?? '';
+        await this.eventService.setCoverUrl(this.eventId, newUrl);
+        this.event.update(ev => ev ? { ...ev, coverUrl: newUrl } : ev);
+      }
     } catch {
       this.showDeleteError();
     }

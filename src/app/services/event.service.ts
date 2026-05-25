@@ -50,7 +50,6 @@ export class EventService {
     return event.password === password;
   }
 
-  /** Trouve un événement par son mot de passe — retourne null si introuvable */
   async findEventByPassword(password: string): Promise<Event | null> {
     const hash = await this.hashPassword(password);
     let q = query(collection(this.firestore, 'events'), where('passwordHash', '==', hash));
@@ -98,6 +97,10 @@ export class EventService {
     await updateDoc(doc(this.firestore, 'events', eventId), { closed });
   }
 
+  async setCoverUrl(eventId: string, url: string): Promise<void> {
+    await updateDoc(doc(this.firestore, 'events', eventId), { coverUrl: url });
+  }
+
   async deletePhoto(eventId: string, photoId: string): Promise<void> {
     await deleteDoc(doc(this.firestore, 'events', eventId, 'photos', photoId));
     await updateDoc(doc(this.firestore, 'events', eventId), { photoCount: increment(-1) });
@@ -108,16 +111,6 @@ export class EventService {
     const snapshot = await getDocs(photosRef);
     await Promise.all(snapshot.docs.map(d => deleteDoc(d.ref)));
     await deleteDoc(doc(this.firestore, 'events', eventId));
-  }
-
-  async getOrganizerEvents(organizerId: string): Promise<Event[]> {
-    const q = query(
-      collection(this.firestore, 'events'),
-      where('organizerId', '==', organizerId),
-      orderBy('createdAt', 'desc')
-    );
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(d => this.convertTimestamps({ id: d.id, ...d.data() }) as Event);
   }
 
   getOrganizerEvents$(organizerId: string): Observable<Event[]> {

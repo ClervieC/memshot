@@ -151,7 +151,9 @@
     "DELETE_SELECTION": "Supprimer la sélection",
     "DELETE": "Supprimer",
     "DELETE_ERROR": "Échec de la suppression. Réessayez.",
-    "SLIDESHOW": "Diaporama"
+    "SLIDESHOW": "Diaporama",
+    "SET_COVER": "Définir comme couverture",
+    "COVER_SET": "Couverture mise à jour"
   },
   "CAMERA": {
     "NO_CAMERA_TITLE": "Caméra inaccessible",
