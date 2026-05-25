@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs';
 export class DashboardComponent implements OnInit, OnDestroy {
   events = signal<Event[]>([]);
   loading = signal(true);
+  showHelp = signal(false);
   qrModal = signal<{ event: Event; dataUrl: string; loading: boolean } | null>(null);
   copied = signal(false);
   swipedEventId = signal<string | null>(null);

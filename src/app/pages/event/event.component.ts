@@ -1,8 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../../services/event.service';
+import { AuthService } from '../../services/auth.service';
 import { Event } from '../../models/event.model';
 import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -25,35 +26,27 @@ export class EventComponent implements OnInit {
   showNameModal = signal(false);
   username = '';
 
-  constructor(
-    private route: ActivatedRoute,
-    public router: Router,
-    private eventService: EventService,
-    private translate: TranslateService
-  ) {}
+  router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private eventService = inject(EventService);
+  private authService = inject(AuthService);
+  private translate = inject(TranslateService);
 
   async ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get('eventId') || '';
-
-    // Check if already authenticated for this event
-    const storedAuth = sessionStorage.getItem(`event_${this.eventId}`);
-    if (storedAuth === 'true') {
+    if (sessionStorage.getItem(`event_${this.eventId}`) === 'true') {
       this.router.navigate(['/event', this.eventId, 'gallery']);
       return;
     }
-
     try {
-      const event = await this.eventService.getEvent(this.eventId);
-      this.event.set(event);
+      this.event.set(await this.eventService.getEvent(this.eventId));
     } finally {
       this.loading.set(false);
     }
   }
 
   confirmJoin() {
-    if (this.username.trim()) {
-      localStorage.setItem('username', this.username.trim());
-    }
+    if (this.username.trim()) localStorage.setItem('username', this.username.trim());
     this.router.navigate(['/event', this.eventId, 'gallery']);
   }
 
@@ -62,15 +55,13 @@ export class EventComponent implements OnInit {
       this.error.set(this.translate.instant('EVENT.ERROR_EMPTY'));
       return;
     }
-
     this.entering.set(true);
     this.error.set('');
-
     try {
       const valid = await this.eventService.verifyEventPassword(this.eventId, this.password);
-
       if (valid) {
         sessionStorage.setItem(`event_${this.eventId}`, 'true');
+        await this.authService.signInAnonymously();
         this.username = localStorage.getItem('username') || '';
         this.showNameModal.set(true);
       } else {

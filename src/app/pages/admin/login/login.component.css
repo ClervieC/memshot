@@ -147,6 +147,8 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    .lang-wrap { position: fixed; top: 1rem; right: 1rem; }
+
     @media (max-width: 390px) {
       h2 { font-size: 2rem; margin-bottom: 1.5rem; }
       .brand { margin-bottom: 2rem; }

@@ -17,6 +17,8 @@
     "TITLE": "Capture",
     "TITLE_EM": "the moment",
     "SUBTITLE": "Enter your event code to access the picture",
+    "ABOUT_TITLE": "What is Memshot?",
+    "ABOUT_TEXT": "Memshot gathers all the photos taken at your event in one place. Guests simply enter the code given by the organizer, or scan the QR code, to join and share their photos.",
     "CODE_PLACEHOLDER": "Event code",
     "JOIN_BTN": "Join",
     "OR": "or",
@@ -42,9 +44,9 @@
     "SUBMIT_REGISTER": "Create account",
     "ERROR_EMPTY": "Please fill in all fields.",
     "ERROR_INVALID_CREDENTIAL": "Incorrect email or password.",
-    "ERROR_EMAIL_IN_USE": "This email is already in use.",
+    "ERROR_EMAIL_ALREADY_IN_USE": "This email is already in use.",
     "ERROR_WEAK_PASSWORD": "Password too weak (min 6 characters).",
-    "ERROR_GENERIC": "An error occurred."
+    "ERROR_UNKNOWN": "An error occurred."
   },
   "DASHBOARD": {
     "TITLE": "My",
@@ -55,7 +57,7 @@
     "CREATE_FIRST": "Create your first event",
     "PHOTO_COUNT": "picture",
     "QR_CODE": "QR code",
-    "PARTICIPANT_PASSWORD": "Participant password",
+    "PARTICIPANT_PASSWORD": "Participant code",
     "DIRECT_LINK": "Direct link",
     "COPY": "Copy",
     "COPIED": "✓",
@@ -72,9 +74,9 @@
     "DESC_LABEL": "Description",
     "DESC_PLACEHOLDER": "A brief description...",
     "DATE_LABEL": "Date",
-    "PASSWORD_LABEL": "Participant password",
+    "PASSWORD_LABEL": "Participant code",
     "PASSWORD_PLACEHOLDER": "e.g.: wedding2024",
-    "PASSWORD_HINT": "Guests will need to enter this password",
+    "PASSWORD_HINT": "Guests will need to enter this code",
     "CREATE_BTN": "Create event",
     "ERROR_REQUIRED": "Please fill in all required fields.",
     "ERROR_GENERIC": "Error creating event. Please try again.",
@@ -93,13 +95,33 @@
     "NOT_FOUND_DESC": "This link is invalid or the event no longer exists.",
     "BACK_HOME": "Back to home",
     "ACCESS_TITLE": "Access the event",
-    "ACCESS_HINT": "Enter the password provided by the organizer",
-    "PASSWORD_PLACEHOLDER": "Password",
+    "ACCESS_HINT": "Enter the code provided by the organizer",
+    "PASSWORD_PLACEHOLDER": "Code",
     "ENTER_BTN": "Enter",
-    "ERROR_EMPTY": "Please enter the password.",
-    "ERROR_WRONG": "Incorrect password.",
+    "ERROR_EMPTY": "Please enter the code.",
+    "ERROR_WRONG": "Incorrect code.",
     "PHOTOS_SHARED_ONE": "{{count}} picture shared",
     "PHOTOS_SHARED_OTHER": "{{count}} pictures shared"
+  },
+  "HELP": {
+    "TITLE": "How to use Memshot",
+    "SECTION_PHOTO_TITLE": "Taking a photo",
+    "SECTION_PHOTO_TEXT": "Press the large white button to take a photo. It's automatically sent to the gallery for everyone to see! Switch to front camera with the rotate icon at the top right.",
+    "SECTION_VIDEO_TITLE": "Recording a video",
+    "SECTION_VIDEO_TEXT": "Tap Video at the bottom to switch modes, then press the red button to start recording (max 90 seconds). Press again to stop. The video is sent automatically.",
+    "SECTION_GALLERY_TITLE": "Browsing the gallery",
+    "SECTION_GALLERY_TEXT": "All shared photos and videos are visible in the gallery. Tap one to view it full screen, then swipe left or right to navigate between them.",
+    "SECTION_DOWNLOAD_TITLE": "Downloading photos",
+    "SECTION_DOWNLOAD_TEXT": "Open a photo and tap the download icon to save it. To download several at once, tap the select icon in the top right, choose your photos, then download the selection.",
+    "DASHBOARD_TITLE": "Managing your events",
+    "SECTION_EVENTS_TITLE": "Your events",
+    "SECTION_EVENTS_TEXT": "All your events are listed here. Tap an event to open its gallery. Each card shows the number of photos and whether the event is live or closed.",
+    "SECTION_OPEN_CLOSE_TITLE": "Open / Close an event",
+    "SECTION_OPEN_CLOSE_TEXT": "Tap the lock icon on a card to close submissions — guests will no longer be able to add photos. Tap it again to reopen. You can also swipe a card left to reveal a quick delete.",
+    "SECTION_QR_TITLE": "QR code & sharing",
+    "SECTION_QR_TEXT": "Tap QR Code on a card to display the QR code. Guests scan it to join instantly. You can also copy the direct link to share it via message or email.",
+    "SECTION_MANAGE_TITLE": "Managing photos in the gallery",
+    "SECTION_MANAGE_TEXT": "Open a gallery to see all photos. As organizer, tap any photo to delete it, or use Select (top right) to pick multiple photos and download or delete them all at once."
   },
   "GALLERY": {
     "PHOTOS_COUNT_ONE": "{{count}} picture",
@@ -127,13 +149,17 @@
     "DOWNLOAD": "Download",
     "DOWNLOAD_SELECTION": "Download selection",
     "DELETE_SELECTION": "Delete selection",
-    "DELETE": "Delete"
+    "DELETE": "Delete",
+    "DELETE_ERROR": "Deletion failed. Please try again.",
+    "SLIDESHOW": "Slideshow"
   },
   "CAMERA": {
     "NO_CAMERA_TITLE": "Camera unavailable",
     "NO_CAMERA_DESC": "Allow camera access or choose from your gallery",
     "CHOOSE_GALLERY": "Choose from gallery",
     "GALLERY_BTN": "Gallery",
+    "MODE_PHOTO": "Photo",
+    "MODE_VIDEO": "Video",
     "NAME_PLACEHOLDER": "Your first name (optional)",
     "SEND_BTN": "Send picture",
     "UPLOADING": "Uploading…",
@@ -141,6 +167,7 @@
     "SUCCESS_DESC": "It now appears in the gallery",
     "TAKE_ANOTHER": "Take another picture",
     "SEE_GALLERY": "See gallery",
-    "ERROR_UPLOAD": "Upload error. Please try again."
+    "ERROR_UPLOAD": "Upload error. Please try again.",
+    "OFFLINE_PENDING": "pending upload(s)"
   }
 }

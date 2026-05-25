@@ -32,6 +32,14 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedIds = signal<Set<string>>(new Set());
   selectedPhotos = computed(() => this.photos().filter(p => this.selectedIds().has(p.id)));
   bulkDownloading = signal(false);
+  deleteError = signal(false);
+
+  showHeaderMenu = signal(false);
+  showHelp = signal(false);
+  slideshowActive = signal(false);
+  slideshowIdx = signal(0);
+  slideshowPhoto = computed(() => this.photos()[this.slideshowIdx()] ?? null);
+  private slideshowTimer?: ReturnType<typeof setInterval>;
 
   private brokenPhotoIds = new Set<string>();
   private lbTouchStartX = 0;
@@ -199,8 +207,12 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
       destructive: true
     });
     if (!ok) return;
-    await Promise.all(photos.map(p => this.eventService.deletePhoto(this.eventId, p.id)));
-    this.exitSelection();
+    try {
+      await Promise.all(photos.map(p => this.eventService.deletePhoto(this.eventId, p.id)));
+      this.exitSelection();
+    } catch {
+      this.showDeleteError();
+    }
   }
 
   // ── Existing methods ───────────────────────────────────────
@@ -261,9 +273,16 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.lightboxPhoto.set(null);
   }
 
+  @HostListener('document:click')
+  onDocumentClick() {
+    if (this.showHeaderMenu()) this.showHeaderMenu.set(false);
+  }
+
   @HostListener('document:keydown', ['$event'])
   onKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') {
+      if (this.showHeaderMenu()) { this.showHeaderMenu.set(false); return; }
+      if (this.slideshowActive()) { this.stopSlideshow(); return; }
       if (this.lightboxPhoto()) { this.closeLightbox(); return; }
       if (this.selectionMode()) { this.exitSelection(); return; }
     }
@@ -332,8 +351,17 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
       destructive: true
     });
     if (!ok) return;
-    await this.eventService.deletePhoto(this.eventId, photo.id);
-    if (this.lightboxPhoto()?.id === photo.id) this.lightboxPhoto.set(null);
+    try {
+      await this.eventService.deletePhoto(this.eventId, photo.id);
+      if (this.lightboxPhoto()?.id === photo.id) this.lightboxPhoto.set(null);
+    } catch {
+      this.showDeleteError();
+    }
+  }
+
+  private showDeleteError() {
+    this.deleteError.set(true);
+    setTimeout(() => this.deleteError.set(false), 3000);
   }
 
   onPhotoLoadError(photo: Photo) {
@@ -355,9 +383,45 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     URL.revokeObjectURL(a.href);
   }
 
+  startSlideshow() {
+    const photos = this.photos();
+    if (!photos.length) return;
+    this.slideshowIdx.set(0);
+    this.slideshowActive.set(true);
+    this.scheduleSlideshow();
+  }
+
+  stopSlideshow() {
+    this.slideshowActive.set(false);
+    clearInterval(this.slideshowTimer);
+  }
+
+  private scheduleSlideshow() {
+    clearInterval(this.slideshowTimer);
+    this.slideshowTimer = setInterval(() => {
+      this.slideshowIdx.update(i => (i + 1) % this.photos().length);
+    }, 5000);
+  }
+
+  slideshowNext() {
+    this.slideshowIdx.update(i => (i + 1) % this.photos().length);
+    this.scheduleSlideshow();
+  }
+
+  slideshowPrev() {
+    const len = this.photos().length;
+    this.slideshowIdx.update(i => (i - 1 + len) % len);
+    this.scheduleSlideshow();
+  }
+
+  trackByPhotoId(_: number, photo: Photo): string {
+    return photo.id;
+  }
+
   ngOnDestroy() {
     this.photosSub?.unsubscribe();
     this.scrollObserver?.disconnect();
     clearTimeout(this.longPressTimer);
+    clearInterval(this.slideshowTimer);
   }
 }

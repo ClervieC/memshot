@@ -73,13 +73,23 @@ export class EventService {
   async uploadPhoto(eventId: string, file: File, uploaderName?: string): Promise<string> {
     const url = await this.cloudinary.uploadImage(file, eventId);
     await addDoc(collection(this.firestore, 'events', eventId, 'photos'), {
-      url,
-      uploadedAt: new Date(),
-      uploaderName: uploaderName || 'Anonyme',
-      eventId
+      url, type: 'photo', uploadedAt: new Date(),
+      uploaderName: uploaderName || 'Anonyme', eventId
     });
     await updateDoc(doc(this.firestore, 'events', eventId), {
-      photoCount: increment(1)
+      photoCount: increment(1), coverUrl: url
+    });
+    return url;
+  }
+
+  async uploadVideo(eventId: string, file: File, uploaderName?: string, onProgress?: (pct: number) => void): Promise<string> {
+    const url = await this.cloudinary.uploadVideo(file, eventId, onProgress);
+    await addDoc(collection(this.firestore, 'events', eventId, 'photos'), {
+      url, type: 'video', uploadedAt: new Date(),
+      uploaderName: uploaderName || 'Anonyme', eventId
+    });
+    await updateDoc(doc(this.firestore, 'events', eventId), {
+      photoCount: increment(1), coverUrl: url
     });
     return url;
   }

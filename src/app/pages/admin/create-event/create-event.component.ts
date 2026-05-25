@@ -1,11 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../../../services/event.service';
 import { QrService } from '../../../services/qr.service';
 import { AuthService } from '../../../services/auth.service';
-import { LangSwitcherComponent } from "src/app/shared/lang-switcher/lang-switcher.component";
+import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -27,11 +27,11 @@ export class CreateEventComponent {
   eventUrl = signal('');
   copied = signal(false);
 
-  router: Router;
-
-  constructor(router: Router, private eventService: EventService, private qrService: QrService, private translate: TranslateService, private authService: AuthService) {
-    this.router = router;
-  }
+  router = inject(Router);
+  private eventService = inject(EventService);
+  private qrService = inject(QrService);
+  private authService = inject(AuthService);
+  private translate = inject(TranslateService);
 
   async logout() {
     await this.authService.logout();
@@ -40,27 +40,21 @@ export class CreateEventComponent {
 
   async createEvent() {
     if (!this.name || !this.date || !this.password) {
-      this.error.set(this.translate.instant('CREATE_EVENET.ERROR_REQUIRED'));
+      this.error.set(this.translate.instant('CREATE_EVENT.ERROR_REQUIRED'));
       return;
     }
-
     this.loading.set(true);
     this.error.set('');
-
     try {
       const eventId = await this.eventService.createEvent(
         this.name, this.description, this.password, new Date(this.date)
       );
-
       const baseUrl = window.location.origin;
-      const url = this.qrService.getEventUrl(eventId, baseUrl);
-      const qr = await this.qrService.generateQR(eventId, baseUrl);
-
       this.createdEventId.set(eventId);
-      this.eventUrl.set(url);
-      this.qrDataUrl.set(qr);
-    } catch (e) {
-      this.error.set(this.translate.instant('CREATE_EVENT.GENERIC'));
+      this.eventUrl.set(this.qrService.getEventUrl(eventId, baseUrl));
+      this.qrDataUrl.set(await this.qrService.generateQR(eventId, baseUrl));
+    } catch {
+      this.error.set(this.translate.instant('CREATE_EVENT.ERROR_GENERIC'));
     } finally {
       this.loading.set(false);
     }

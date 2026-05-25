@@ -11,6 +11,13 @@
         </svg>
         <span class="btn-new-label">{{ 'DASHBOARD.NEW_EVENT' | translate}}</span>
       </button>
+      <button class="btn-logout" (click)="showHelp.set(true)" [title]="'HELP.TITLE' | translate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </button>
       <button class="btn-logout" (click)="logout()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -60,6 +67,11 @@
             <path d="M10 11v6M14 11v6"/>
             <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
           </svg>
+        </div>
+
+        <!-- Cover photo -->
+        <div class="event-cover" *ngIf="event.coverUrl">
+          <img [src]="event.coverUrl" alt="" loading="lazy" (click)="openEvent(event)" />
         </div>
 
         <!-- Swipeable content wrapper -->
@@ -134,6 +146,50 @@
       </div>
     </div>
   </main>
+
+  <!-- Help modal -->
+  <div class="help-backdrop" *ngIf="showHelp()" (click)="showHelp.set(false)">
+    <div class="help-sheet" (click)="$event.stopPropagation()">
+      <div class="help-header">
+        <h2>{{ 'HELP.DASHBOARD_TITLE' | translate }}</h2>
+        <button class="help-close" (click)="showHelp.set(false)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="help-body">
+        <div class="help-section">
+          <div class="help-icon">📅</div>
+          <div>
+            <h3>{{ 'HELP.SECTION_EVENTS_TITLE' | translate }}</h3>
+            <p>{{ 'HELP.SECTION_EVENTS_TEXT' | translate }}</p>
+          </div>
+        </div>
+        <div class="help-section">
+          <div class="help-icon">🔒</div>
+          <div>
+            <h3>{{ 'HELP.SECTION_OPEN_CLOSE_TITLE' | translate }}</h3>
+            <p>{{ 'HELP.SECTION_OPEN_CLOSE_TEXT' | translate }}</p>
+          </div>
+        </div>
+        <div class="help-section">
+          <div class="help-icon">📷</div>
+          <div>
+            <h3>{{ 'HELP.SECTION_QR_TITLE' | translate }}</h3>
+            <p>{{ 'HELP.SECTION_QR_TEXT' | translate }}</p>
+          </div>
+        </div>
+        <div class="help-section">
+          <div class="help-icon">🗑️</div>
+          <div>
+            <h3>{{ 'HELP.SECTION_MANAGE_TITLE' | translate }}</h3>
+            <p>{{ 'HELP.SECTION_MANAGE_TEXT' | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- QR Modal -->
   <div class="modal-backdrop" *ngIf="qrModal()" (click)="closeQr()">

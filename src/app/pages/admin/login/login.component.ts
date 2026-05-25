@@ -1,10 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { LangSwitcherComponent } from "src/app/shared/lang-switcher/lang-switcher.component";
 
 @Component({
   selector: 'app-login',
@@ -13,24 +13,29 @@ import { LangSwitcherComponent } from "src/app/shared/lang-switcher/lang-switche
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   email = '';
   password = '';
   mode = signal<'login' | 'register'>('login');
   loading = signal(false);
   error = signal('');
 
-  constructor(public router: Router, private authService: AuthService, private translate: TranslateService) {}
+  router = inject(Router);
+  private authService = inject(AuthService);
+  private translate = inject(TranslateService);
+
+  ngOnInit() {
+    const u = this.authService.getCurrentUser();
+    if (u && !u.isAnonymous) this.router.navigate(['/admin/dashboard']);
+  }
 
   async submit() {
     if (!this.email || !this.password) {
       this.error.set(this.translate.instant('LOGIN.ERROR_EMPTY'));
       return;
     }
-
     this.loading.set(true);
     this.error.set('');
-
     try {
       if (this.mode() === 'login') {
         await this.authService.login(this.email, this.password);

@@ -99,11 +99,20 @@
     }
     .btn-secondary:hover { background: rgba(29,28,24,0.06); color: var(--text); border-color: rgba(29,28,24,0.18); }
     .btn-secondary svg { width: 16px; height: 16px; }
-    .organizer{
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
+    .organizer { display: flex; align-items: center; justify-content: center; }
+    .lang-wrap { position: fixed; top: 1rem; right: 1rem; }
+
+    .about-card {
+      display: flex; align-items: flex-start; gap: 0.875rem;
+      margin-top: 1.5rem;
+      background: rgba(200,169,122,0.08);
+      border: 1px solid rgba(200,169,122,0.2);
+      border-radius: 14px; padding: 1rem 1.1rem;
     }
+    .about-icon { flex-shrink: 0; color: var(--accent); margin-top: 0.1rem; }
+    .about-icon svg { width: 20px; height: 20px; }
+    .about-text strong { font-size: 0.82rem; font-weight: 600; color: var(--text); display: block; margin-bottom: 0.3rem; }
+    .about-text p { margin: 0; font-size: 0.8rem; line-height: 1.55; color: rgba(29,28,24,0.6); }
 
     .modal-backdrop {
       position: fixed; inset: 0;
@@ -126,11 +135,6 @@
       h1 { font-size: 2.5rem; }
       .logo { margin-bottom: 2rem; }
       .subtitle { font-size: 0.85rem; margin-bottom: 1.5rem; }
-    }
-
-    @media (min-width: 768px) {
-      .modal-backdrop { align-items: center; }
-      .modal { border-radius: 24px; max-width: 400px; padding: 2.25rem; }
     }
 
     .modal-close {
@@ -165,4 +169,6 @@
     @media (min-width: 768px) {
       .home { padding: 3rem; align-items: center; }
       h1 { font-size: 3.5rem; }
+      .modal-backdrop { align-items: center; }
+      .modal { border-radius: 24px; max-width: 400px; padding: 2.25rem; }
     }

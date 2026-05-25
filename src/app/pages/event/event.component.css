@@ -1,6 +1,8 @@
 
     :host { display: block; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
+    .lang-wrap { position: fixed; top: 1rem; right: 1rem; }
+
     .event-page {
       min-height: 100svh;
       display: flex;

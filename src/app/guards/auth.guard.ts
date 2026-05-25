@@ -10,7 +10,7 @@ export const authGuard: CanActivateFn = () => {
   return user(auth).pipe(
     take(1),
     map(u => {
-      if (u) return true;
+      if (u && !u.isAnonymous) return true;
       router.navigate(['/admin/login']);
       return false;
     })

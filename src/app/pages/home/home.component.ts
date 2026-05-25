@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { EventService } from '../../services/event.service';
+import { AuthService } from '../../services/auth.service';
 import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -21,7 +22,10 @@ export class HomeComponent {
   showModal = signal(false);
   private pendingEventId = '';
 
-  constructor(private router: Router, private eventService: EventService, private translate: TranslateService) {}
+  private router = inject(Router);
+  private eventService = inject(EventService);
+  private authService = inject(AuthService);
+  private translate = inject(TranslateService);
 
   async joinEvent() {
     const trimmed = this.code.trim();
@@ -40,6 +44,7 @@ export class HomeComponent {
         return;
       }
       sessionStorage.setItem(`event_${event.id}`, 'true');
+      await this.authService.signInAnonymously();
       this.pendingEventId = event.id;
       this.username = localStorage.getItem('username') || '';
       this.showModal.set(true);
@@ -55,9 +60,7 @@ export class HomeComponent {
   }
 
   confirmJoin() {
-    if (this.username.trim()) {
-      localStorage.setItem('username', this.username.trim());
-    }
+    if (this.username.trim()) localStorage.setItem('username', this.username.trim());
     this.router.navigate(['/event', this.pendingEventId, 'gallery']);
   }
 

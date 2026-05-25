@@ -16,6 +16,7 @@ export interface Photo {
   id: string;
   eventId: string;
   url: string;
+  type?: 'photo' | 'video';
   uploadedAt: Date;
   uploaderName?: string;
 }

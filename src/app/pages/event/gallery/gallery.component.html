@@ -29,6 +29,8 @@
 
     <div class="header-right">
       <ng-container *ngIf="!selectionMode()">
+
+        <!-- Status badge (always visible) -->
         <div class="live-badge" *ngIf="!event()?.closed">
           <span class="live-dot"></span>
           {{ 'GALLERY.LIVE' | translate }}
@@ -40,48 +42,92 @@
           </svg>
           {{ 'GALLERY.CLOSED' | translate }}
         </div>
+
+        <!-- Camera (always visible for guests) -->
         <button class="btn-camera" (click)="goToCamera()" *ngIf="!isAdmin() && !event()?.closed">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
             <circle cx="12" cy="13" r="4"/>
           </svg>
         </button>
-        <!-- Download all -->
-        <button class="btn-dl-all" *ngIf="photos().length > 0" (click)="downloadAll()" [disabled]="bulkDownloading()" [title]="'GALLERY.DOWNLOAD_ALL' | translate">
-          <svg *ngIf="!bulkDownloading()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          <span class="btn-spin-sm" *ngIf="bulkDownloading()"></span>
-        </button>
-        <!-- Enter selection mode -->
-        <button class="btn-select-mode" *ngIf="photos().length > 0" (click)="enterSelection()" [title]="'GALLERY.SELECT' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="2" width="9" height="9" rx="1"/>
-            <rect x="13" y="2" width="9" height="9" rx="1"/>
-            <rect x="2" y="13" width="9" height="9" rx="1"/>
-            <path d="M17 13l2 2 4-4"/>
-          </svg>
-        </button>
-        <button class="btn-share" (click)="shareGallery()" [title]="(linkCopied() ? 'GALLERY.LINK_COPIED' : 'GALLERY.SHARE') | translate">
-          <svg *ngIf="!linkCopied()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-          </svg>
-          <svg *ngIf="linkCopied()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        </button>
-        <button class="btn-logout" *ngIf="isAdmin()" (click)="logout()" [title]="'GALLERY.LOGOUT' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
-        </button>
+
+        <!-- Language switcher (always visible) -->
         <app-lang-switcher></app-lang-switcher>
+
+        <!-- More menu -->
+        <div class="menu-wrap">
+          <button class="btn-more" (click)="showHeaderMenu.set(!showHeaderMenu()); $event.stopPropagation()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+            </svg>
+          </button>
+
+          <div class="menu-panel" *ngIf="showHeaderMenu()" (click)="$event.stopPropagation()">
+            <!-- Select -->
+            <button class="menu-item" *ngIf="photos().length > 0"
+              (click)="enterSelection(); showHeaderMenu.set(false)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="9" height="9" rx="1"/><rect x="13" y="2" width="9" height="9" rx="1"/>
+                <rect x="2" y="13" width="9" height="9" rx="1"/><path d="M17 13l2 2 4-4"/>
+              </svg>
+              {{ 'GALLERY.SELECT' | translate }}
+            </button>
+            <!-- Download all -->
+            <button class="menu-item" *ngIf="photos().length > 0"
+              (click)="downloadAll(); showHeaderMenu.set(false)" [disabled]="bulkDownloading()">
+              <svg *ngIf="!bulkDownloading()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span class="btn-spin-sm" *ngIf="bulkDownloading()"></span>
+              {{ 'GALLERY.DOWNLOAD_ALL' | translate }}
+            </button>
+            <!-- Slideshow -->
+            <button class="menu-item" *ngIf="photos().length > 1"
+              (click)="startSlideshow(); showHeaderMenu.set(false)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              {{ 'GALLERY.SLIDESHOW' | translate }}
+            </button>
+            <!-- Share -->
+            <button class="menu-item" (click)="shareGallery(); showHeaderMenu.set(false)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+              {{ linkCopied() ? ('GALLERY.LINK_COPIED' | translate) : ('GALLERY.SHARE' | translate) }}
+            </button>
+
+            <!-- Help -->
+            <button class="menu-item"
+              (click)="showHelp.set(true); showHeaderMenu.set(false)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              {{ 'HELP.TITLE' | translate }}
+            </button>
+
+            <!-- Logout (admin) -->
+            <ng-container *ngIf="isAdmin()">
+              <div class="menu-divider"></div>
+              <button class="menu-item menu-item-danger"
+                (click)="logout(); showHeaderMenu.set(false)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                {{ 'GALLERY.LOGOUT' | translate }}
+              </button>
+            </ng-container>
+          </div>
+        </div>
+
       </ng-container>
 
       <!-- Selection mode actions in header -->
@@ -118,7 +164,7 @@
 
   <div class="photo-grid" *ngIf="photos().length > 0">
     <div class="photo-item"
-      *ngFor="let photo of photos().slice(0, displayCount())"
+      *ngFor="let photo of photos().slice(0, displayCount()); trackBy: trackByPhotoId"
       [class.is-selected]="isSelected(photo)"
       [class.in-selection]="selectionMode()"
       (click)="onPhotoClick(photo)"
@@ -133,7 +179,15 @@
         </svg>
       </div>
 
-      <img [src]="photo.url" [alt]="photo.uploaderName || 'Photo'" loading="lazy" (error)="onPhotoLoadError(photo)" />
+      <ng-container *ngIf="photo.type === 'video'; else photoImg">
+        <video [src]="photo.url" muted playsinline preload="metadata" class="photo-video"></video>
+        <div class="video-play-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+      </ng-container>
+      <ng-template #photoImg>
+        <img [src]="photo.url" [alt]="photo.uploaderName || 'Photo'" loading="lazy" (error)="onPhotoLoadError(photo)" />
+      </ng-template>
 
       <div class="photo-overlay" *ngIf="!selectionMode()">
         <span class="uploader-name" *ngIf="photo.uploaderName">{{ photo.uploaderName }}</span>
@@ -198,6 +252,96 @@
     </button>
   </div>
 
+  <!-- Delete error toast -->
+  <div class="upload-toast error" *ngIf="deleteError()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    {{ 'GALLERY.DELETE_ERROR' | translate }}
+  </div>
+
+  <!-- Help modal -->
+  <div class="help-backdrop" *ngIf="showHelp()" (click)="showHelp.set(false)">
+    <div class="help-sheet" (click)="$event.stopPropagation()">
+      <div class="help-header">
+        <h2>{{ 'HELP.TITLE' | translate }}</h2>
+        <button class="help-close" (click)="showHelp.set(false)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="help-body">
+        <div class="help-section">
+          <div class="help-icon">📸</div>
+          <div>
+            <h3>{{ 'HELP.SECTION_PHOTO_TITLE' | translate }}</h3>
+            <p>{{ 'HELP.SECTION_PHOTO_TEXT' | translate }}</p>
+          </div>
+        </div>
+        <div class="help-section">
+          <div class="help-icon">🎥</div>
+          <div>
+            <h3>{{ 'HELP.SECTION_VIDEO_TITLE' | translate }}</h3>
+            <p>{{ 'HELP.SECTION_VIDEO_TEXT' | translate }}</p>
+          </div>
+        </div>
+        <div class="help-section">
+          <div class="help-icon">🖼️</div>
+          <div>
+            <h3>{{ 'HELP.SECTION_GALLERY_TITLE' | translate }}</h3>
+            <p>{{ 'HELP.SECTION_GALLERY_TEXT' | translate }}</p>
+          </div>
+        </div>
+        <div class="help-section">
+          <div class="help-icon">⬇️</div>
+          <div>
+            <h3>{{ 'HELP.SECTION_DOWNLOAD_TITLE' | translate }}</h3>
+            <p>{{ 'HELP.SECTION_DOWNLOAD_TEXT' | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slideshow overlay -->
+  <div class="slideshow" *ngIf="slideshowActive()" (click)="stopSlideshow()">
+    <button class="ss-close" (click)="stopSlideshow()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <button class="ss-nav ss-prev" (click)="slideshowPrev(); $event.stopPropagation()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+
+    <ng-container *ngIf="slideshowPhoto() as photo">
+      <video *ngIf="photo.type === 'video'"
+        [src]="photo.url" autoplay muted loop playsinline
+        class="ss-media" (click)="$event.stopPropagation()"></video>
+      <img *ngIf="photo.type !== 'video'"
+        [src]="photo.url" class="ss-media" (click)="$event.stopPropagation()" />
+    </ng-container>
+
+    <button class="ss-nav ss-next" (click)="slideshowNext(); $event.stopPropagation()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </button>
+
+    <div class="ss-footer" (click)="$event.stopPropagation()">
+      <span class="ss-caption" *ngIf="slideshowPhoto()?.uploaderName">
+        {{ 'GALLERY.BY' | translate: { name: slideshowPhoto()!.uploaderName } }}
+      </span>
+      <span class="ss-counter">{{ slideshowIdx() + 1 }} / {{ photos().length }}</span>
+    </div>
+  </div>
+
   <!-- Lightbox -->
   <div class="lightbox" *ngIf="lightboxPhoto()" (click)="closeLightbox()"
        (touchstart)="onLbTouchStart($event)" (touchend)="onLbTouchEnd($event)">
@@ -221,7 +365,12 @@
         <path d="M15 18l-6-6 6-6"/>
       </svg>
     </button>
-    <img [src]="lightboxPhoto()!.url" (click)="$event.stopPropagation()" (error)="onPhotoLoadError(lightboxPhoto()!)" />
+    <ng-container *ngIf="lightboxPhoto()!.type !== 'video'">
+      <img [src]="lightboxPhoto()!.url" (click)="$event.stopPropagation()" (error)="onPhotoLoadError(lightboxPhoto()!)" />
+    </ng-container>
+    <ng-container *ngIf="lightboxPhoto()!.type === 'video'">
+      <video [src]="lightboxPhoto()!.url" controls autoplay playsinline (click)="$event.stopPropagation()" class="lb-video"></video>
+    </ng-container>
     <button class="lb-nav lb-next" (click)="nextPhoto(); $event.stopPropagation()"
             *ngIf="photos().indexOf(lightboxPhoto()!) < photos().length - 1">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
