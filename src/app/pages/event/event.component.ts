@@ -34,7 +34,7 @@ export class EventComponent implements OnInit {
 
   async ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get('eventId') || '';
-    if (sessionStorage.getItem(`event_${this.eventId}`) === 'true') {
+    if (localStorage.getItem(`event_${this.eventId}`) === 'true') {
       this.router.navigate(['/event', this.eventId, 'gallery']);
       return;
     }
@@ -42,6 +42,11 @@ export class EventComponent implements OnInit {
       this.event.set(await this.eventService.getEvent(this.eventId));
     } finally {
       this.loading.set(false);
+    }
+    const autoCode = this.route.snapshot.queryParamMap.get('code');
+    if (autoCode) {
+      this.password = autoCode;
+      await this.enter();
     }
   }
 
@@ -60,7 +65,7 @@ export class EventComponent implements OnInit {
     try {
       const valid = await this.eventService.verifyEventPassword(this.eventId, this.password);
       if (valid) {
-        sessionStorage.setItem(`event_${this.eventId}`, 'true');
+        localStorage.setItem(`event_${this.eventId}`, 'true');
         await this.authService.signInAnonymously();
         this.username = localStorage.getItem('username') || '';
         this.showNameModal.set(true);

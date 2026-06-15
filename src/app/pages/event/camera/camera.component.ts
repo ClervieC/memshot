@@ -58,7 +58,7 @@ export class CameraComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get('eventId') || '';
-    const auth = sessionStorage.getItem(`event_${this.eventId}`);
+    const auth = localStorage.getItem(`event_${this.eventId}`);
     if (!auth) { this.router.navigate(['/event', this.eventId]); return; }
 
     await this.authService.signInAnonymously();

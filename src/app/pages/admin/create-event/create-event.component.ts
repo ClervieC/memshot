@@ -51,8 +51,8 @@ export class CreateEventComponent {
       );
       const baseUrl = window.location.origin;
       this.createdEventId.set(eventId);
-      this.eventUrl.set(this.qrService.getEventUrl(eventId, baseUrl));
-      this.qrDataUrl.set(await this.qrService.generateQR(eventId, baseUrl));
+      this.eventUrl.set(this.qrService.getEventUrl(eventId, baseUrl, this.password));
+      this.qrDataUrl.set(await this.qrService.generateQR(eventId, baseUrl, this.password));
     } catch {
       this.error.set(this.translate.instant('CREATE_EVENT.ERROR_GENERIC'));
     } finally {

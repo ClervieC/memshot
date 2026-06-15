@@ -129,7 +129,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   async showQr(event: Event, e: MouseEvent) {
     e.stopPropagation();
     this.qrModal.set({ event, dataUrl: '', loading: true });
-    const dataUrl = await this.qrService.generateQR(event.id, window.location.origin);
+    const dataUrl = await this.qrService.generateQR(event.id, window.location.origin, event.password);
     this.qrModal.set({ event, dataUrl, loading: false });
   }
 
@@ -148,7 +148,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getEventUrl(eventId: string): string {
-    return this.qrService.getEventUrl(eventId, window.location.origin);
+    const event = this.events().find(e => e.id === eventId);
+    return this.qrService.getEventUrl(eventId, window.location.origin, event?.password);
   }
 
   copyUrl(eventId: string) {

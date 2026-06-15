@@ -63,7 +63,7 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnInit() {
     this.eventId = this.route.snapshot.paramMap.get('eventId') || '';
-    const sessionAuth = sessionStorage.getItem(`event_${this.eventId}`);
+    const sessionAuth = localStorage.getItem(`event_${this.eventId}`);
     const currentUser = this.authService.getCurrentUser();
 
     if (!sessionAuth && !currentUser) {

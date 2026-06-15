@@ -43,7 +43,7 @@ export class HomeComponent {
         this.error.set(this.translate.instant('HOME.ERROR_NOT_FOUND'));
         return;
       }
-      sessionStorage.setItem(`event_${event.id}`, 'true');
+      localStorage.setItem(`event_${event.id}`, 'true');
       await this.authService.signInAnonymously();
       this.pendingEventId = event.id;
       this.username = localStorage.getItem('username') || '';
