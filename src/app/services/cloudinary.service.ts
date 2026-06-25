@@ -3,38 +3,38 @@ import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CloudinaryService {
-  private workerUrl = environment.r2.workerUrl;
-  private secret = environment.r2.uploadSecret;
+  private cloudName = environment.cloudinary.cloudName;
+  private uploadPreset = environment.cloudinary.uploadPreset;
 
   async uploadImage(file: File, folder?: string): Promise<string> {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('upload_preset', this.uploadPreset);
     if (folder) formData.append('folder', folder);
 
-    const response = await fetch(this.workerUrl, {
-      method: 'POST',
-      headers: { 'X-Upload-Secret': this.secret },
-      body: formData,
-    });
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`,
+      { method: 'POST', body: formData }
+    );
 
     if (!response.ok) {
       const err = await response.json();
-      throw new Error(err.error || 'Upload failed');
+      throw new Error(err.error?.message || 'Upload failed');
     }
 
-    const { url } = await response.json();
-    return url as string;
+    const { secure_url } = await response.json();
+    return secure_url as string;
   }
 
   uploadVideo(file: File, folder?: string, onProgress?: (pct: number) => void): Promise<string> {
     return new Promise((resolve, reject) => {
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('upload_preset', this.uploadPreset);
       if (folder) formData.append('folder', folder);
 
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', this.workerUrl);
-      xhr.setRequestHeader('X-Upload-Secret', this.secret);
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${this.cloudName}/video/upload`);
 
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable && onProgress) {
@@ -45,15 +45,15 @@ export class CloudinaryService {
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           try {
-            const { url } = JSON.parse(xhr.responseText);
-            resolve(url);
+            const { secure_url } = JSON.parse(xhr.responseText);
+            resolve(secure_url);
           } catch {
             reject(new Error('Invalid response'));
           }
         } else {
           try {
             const err = JSON.parse(xhr.responseText);
-            reject(new Error(err.error || 'Video upload failed'));
+            reject(new Error(err.error?.message || 'Video upload failed'));
           } catch {
             reject(new Error('Video upload failed'));
           }
