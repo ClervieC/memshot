@@ -41,6 +41,12 @@
               autocapitalize="off"
               spellcheck="false"
             />
+            <button class="btn-scan" (click)="openScanner()" [title]="'HOME.SCAN_BTN' | translate">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/>
+                <rect x="7" y="7" width="10" height="10" rx="1"/>
+              </svg>
+            </button>
           </div>
           <p class="error-msg" *ngIf="error()">{{ error() }}</p>
 
@@ -86,6 +92,25 @@
       </div>
       <div class="lang-wrap">
         <app-lang-switcher></app-lang-switcher>
+      </div>
+
+      <!-- QR Scanner modal -->
+      <div class="modal-backdrop" *ngIf="showScanner()" (click)="closeScanner()">
+        <div class="modal scanner-modal" (click)="$event.stopPropagation()">
+          <button class="modal-close" (click)="closeScanner()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+          <h3>{{ 'HOME.SCAN_TITLE' | translate }}</h3>
+          <p>{{ 'HOME.SCAN_HINT' | translate }}</p>
+          <div class="scan-viewport">
+            <video #scanVideo playsinline muted autoplay></video>
+            <canvas #scanCanvas hidden></canvas>
+            <div class="scan-frame"></div>
+          </div>
+          <p class="error-msg" *ngIf="scanError()">{{ scanError() }}</p>
+        </div>
       </div>
 
       <!-- Username modal -->

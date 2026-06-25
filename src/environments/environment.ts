@@ -9,8 +9,8 @@ export const environment = {
     appId: "1:84650010552:web:f19bed809ee8543216114d",
     measurementId: "G-TCCQRHC1S2"
   },
-  cloudinary: {
-    cloudName: "dhipsxywl",       // ex: "memshot-prod"
-    uploadPreset: "memshot"  // ex: "memshot_unsigned"
+  r2: {
+    workerUrl: 'https://TON-WORKER.TON-SOUS-DOMAINE.workers.dev',
+    uploadSecret: 'TA-CLE-SECRETE'
   }
 };

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { EventService } from '../../services/event.service';
 import { AuthService } from '../../services/auth.service';
 import { Event } from '../../models/event.model';
@@ -11,9 +11,9 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [CommonModule, FormsModule, LangSwitcherComponent, TranslateModule],
+  imports: [CommonModule, DatePipe, FormsModule, LangSwitcherComponent, TranslateModule],
   templateUrl: './event.component.html',
-  styleUrl: './event.component.css'
+  styleUrl: './event.component.css',
 })
 export class EventComponent implements OnInit {
   event = signal<Event | null>(null);

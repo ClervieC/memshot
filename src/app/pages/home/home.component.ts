@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -6,6 +6,7 @@ import { EventService } from '../../services/event.service';
 import { AuthService } from '../../services/auth.service';
 import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import jsQR from 'jsqr';
 
 @Component({
   selector: 'app-home',
@@ -15,12 +16,20 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  @ViewChild('scanVideo') scanVideoRef!: ElementRef<HTMLVideoElement>;
+  @ViewChild('scanCanvas') scanCanvasRef!: ElementRef<HTMLCanvasElement>;
+
   code = '';
   username = '';
   loading = signal(false);
   error = signal('');
   showModal = signal(false);
+  showScanner = signal(false);
+  scanError = signal('');
+
   private pendingEventId = '';
+  private stream: MediaStream | null = null;
+  private scanLoop: number | null = null;
 
   private router = inject(Router);
   private eventService = inject(EventService);
@@ -66,5 +75,68 @@ export class HomeComponent {
 
   goToAdmin() {
     this.router.navigate(['/admin/login']);
+  }
+
+  async openScanner() {
+    this.scanError.set('');
+    this.showScanner.set(true);
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+      });
+      setTimeout(() => this.startScanLoop(), 100);
+    } catch {
+      this.scanError.set(this.translate.instant('HOME.SCAN_ERROR_CAMERA'));
+    }
+  }
+
+  closeScanner() {
+    this.stopScanLoop();
+    this.showScanner.set(false);
+  }
+
+  private startScanLoop() {
+    const video = this.scanVideoRef?.nativeElement;
+    if (!video || !this.stream) return;
+    video.srcObject = this.stream;
+    video.play();
+    const tick = () => {
+      if (!this.showScanner()) return;
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        const canvas = this.scanCanvasRef.nativeElement;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(video, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        if (code?.data) {
+          this.handleScannedUrl(code.data);
+          return;
+        }
+      }
+      this.scanLoop = requestAnimationFrame(tick);
+    };
+    this.scanLoop = requestAnimationFrame(tick);
+  }
+
+  private stopScanLoop() {
+    if (this.scanLoop !== null) {
+      cancelAnimationFrame(this.scanLoop);
+      this.scanLoop = null;
+    }
+    this.stream?.getTracks().forEach(t => t.stop());
+    this.stream = null;
+  }
+
+  private handleScannedUrl(raw: string) {
+    this.stopScanLoop();
+    this.showScanner.set(false);
+    try {
+      const url = new URL(raw);
+      this.router.navigateByUrl(url.pathname + url.search);
+    } catch {
+      this.scanError.set(this.translate.instant('HOME.SCAN_ERROR_INVALID'));
+    }
   }
 }

@@ -3,50 +3,38 @@ import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CloudinaryService {
+  private workerUrl = environment.r2.workerUrl;
+  private secret = environment.r2.uploadSecret;
 
-  /**
-   * Upload an image to Cloudinary using an unsigned upload preset.
-   * No backend required — upload goes directly from the browser.
-   *
-   * @param file     The image File to upload
-   * @param folder   Optional Cloudinary folder (e.g. event ID)
-   * @returns        Secure URL of the uploaded image
-   */
   async uploadImage(file: File, folder?: string): Promise<string> {
-    const { cloudName, uploadPreset } = environment.cloudinary;
-
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', uploadPreset);
+    if (folder) formData.append('folder', folder);
 
-    if (folder) {
-      formData.append('folder', `memshot/${folder}`);
-    }
-
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      { method: 'POST', body: formData }
-    );
+    const response = await fetch(this.workerUrl, {
+      method: 'POST',
+      headers: { 'X-Upload-Secret': this.secret },
+      body: formData,
+    });
 
     if (!response.ok) {
       const err = await response.json();
-      throw new Error(err.error?.message || 'Cloudinary upload failed');
+      throw new Error(err.error || 'Upload failed');
     }
 
-    const data = await response.json();
-    return data.secure_url as string;
+    const { url } = await response.json();
+    return url as string;
   }
 
   uploadVideo(file: File, folder?: string, onProgress?: (pct: number) => void): Promise<string> {
-    const { cloudName, uploadPreset } = environment.cloudinary;
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', uploadPreset);
-    if (folder) formData.append('folder', `memshot/${folder}`);
-
     return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      if (folder) formData.append('folder', folder);
+
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
+      xhr.open('POST', this.workerUrl);
+      xhr.setRequestHeader('X-Upload-Secret', this.secret);
 
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable && onProgress) {
@@ -56,14 +44,18 @@ export class CloudinaryService {
 
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
-          const data = JSON.parse(xhr.responseText);
-          resolve(data.secure_url);
+          try {
+            const { url } = JSON.parse(xhr.responseText);
+            resolve(url);
+          } catch {
+            reject(new Error('Invalid response'));
+          }
         } else {
           try {
             const err = JSON.parse(xhr.responseText);
-            reject(new Error(err.error?.message || 'Cloudinary video upload failed'));
+            reject(new Error(err.error || 'Video upload failed'));
           } catch {
-            reject(new Error('Cloudinary video upload failed'));
+            reject(new Error('Video upload failed'));
           }
         }
       };
