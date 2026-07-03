@@ -66,6 +66,7 @@ export class EventComponent implements OnInit {
       const valid = await this.eventService.verifyEventPassword(this.eventId, this.password);
       if (valid) {
         localStorage.setItem(`event_${this.eventId}`, 'true');
+        localStorage.setItem('lastEventId', this.eventId);
         await this.authService.signInAnonymously();
         this.username = localStorage.getItem('username') || '';
         this.showNameModal.set(true);

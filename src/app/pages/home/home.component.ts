@@ -22,6 +22,13 @@ export class HomeComponent {
   code = '';
   username = '';
   loading = signal(false);
+
+  constructor() {
+    const lastEventId = localStorage.getItem('lastEventId');
+    if (lastEventId && localStorage.getItem(`event_${lastEventId}`)) {
+      inject(Router).navigate(['/event', lastEventId, 'gallery']);
+    }
+  }
   error = signal('');
   showModal = signal(false);
   showScanner = signal(false);
@@ -53,6 +60,7 @@ export class HomeComponent {
         return;
       }
       localStorage.setItem(`event_${event.id}`, 'true');
+      localStorage.setItem('lastEventId', event.id);
       await this.authService.signInAnonymously();
       this.pendingEventId = event.id;
       this.username = localStorage.getItem('username') || '';

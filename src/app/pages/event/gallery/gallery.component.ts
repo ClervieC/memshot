@@ -259,11 +259,13 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.isAdmin()) {
       this.router.navigate(['/admin/dashboard']);
     } else {
+      localStorage.removeItem('lastEventId');
       this.router.navigate(['/']);
     }
   }
 
   async logout() {
+    localStorage.removeItem('lastEventId');
     await this.authService.logout();
     this.router.navigate(['/']);
   }
