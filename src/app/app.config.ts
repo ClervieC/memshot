@@ -4,24 +4,19 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
-import { initializeApp, provideFirebaseApp, getApp } from '@angular/fire/app';
-import { getAuth, provideAuth, onAuthStateChanged, signInAnonymously, Auth } from '@angular/fire/auth';
-import { provideFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from '@angular/fire/firestore';
 import { routes } from './app.routes';
-import { environment } from '../environments/environment';
+import { supabase } from './core/supabase.client';
 
-function initAuth(auth: Auth) {
-  return () => new Promise<void>(resolve => {
-    const unsub = onAuthStateChanged(auth, async user => {
-      unsub();
-      if (!user) {
-        const hasEvent = Object.keys(localStorage).some(k => k.startsWith('event_'));
-        if (hasEvent) {
-          try { await signInAnonymously(auth); } catch { /* ignore */ }
-        }
+function initAuth() {
+  return () => new Promise<void>(async resolve => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      const hasEvent = Object.keys(localStorage).some(k => k.startsWith('event_'));
+      if (hasEvent) {
+        try { await supabase.auth.signInAnonymously(); } catch { /* ignore */ }
       }
-      resolve();
-    });
+    }
+    resolve();
   });
 }
 
@@ -43,11 +38,6 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
-    { provide: APP_INITIALIZER, useFactory: initAuth, multi: true, deps: [Auth] },
-    provideFirestore(() => initializeFirestore(getApp(), {
-      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
-    })),
+    { provide: APP_INITIALIZER, useFactory: initAuth, multi: true },
   ]
 };

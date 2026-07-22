@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     const u = this.authService.getCurrentUser();
-    if (u && !u.isAnonymous) this.router.navigate(['/admin/dashboard']);
+    if (u && !u.is_anonymous) this.router.navigate(['/admin/dashboard']);
   }
 
   async submit() {
@@ -44,9 +44,9 @@ export class LoginComponent implements OnInit {
       }
       this.router.navigate(['/admin/dashboard']);
     } catch (e: any) {
-      const msg = e.code === 'auth/invalid-credential' ? this.translate.instant('LOGIN.ERROR_INVALID_CREDENTIAL') :
-                  e.code === 'auth/email-already-in-use' ? this.translate.instant('LOGIN.ERROR_EMAIL_ALREADY_IN_USE') :
-                  e.code === 'auth/weak-password' ? this.translate.instant('LOGIN.ERROR_WEAK_PASSWORD') :
+      const msg = e.code === 'invalid_credentials' ? this.translate.instant('LOGIN.ERROR_INVALID_CREDENTIAL') :
+                  e.code === 'user_already_exists' ? this.translate.instant('LOGIN.ERROR_EMAIL_ALREADY_IN_USE') :
+                  e.code === 'weak_password' ? this.translate.instant('LOGIN.ERROR_WEAK_PASSWORD') :
                   this.translate.instant('LOGIN.ERROR_UNKNOWN');
       this.error.set(msg);
     } finally {

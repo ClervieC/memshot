@@ -1,18 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Auth, user } from '@angular/fire/auth';
-import { map, take } from 'rxjs/operators';
+import { supabase } from '../core/supabase.client';
 
-export const authGuard: CanActivateFn = () => {
-  const auth = inject(Auth);
+export const authGuard: CanActivateFn = async () => {
   const router = inject(Router);
 
-  return user(auth).pipe(
-    take(1),
-    map(u => {
-      if (u && !u.isAnonymous) return true;
-      router.navigate(['/admin/login']);
-      return false;
-    })
-  );
+  const { data } = await supabase.auth.getSession();
+  const u = data.session?.user;
+  if (u && !u.is_anonymous) return true;
+  router.navigate(['/admin/login']);
+  return false;
 };

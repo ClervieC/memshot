@@ -72,7 +72,7 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const event = await this.eventService.getEvent(this.eventId);
-    if (event && currentUser && event.organizerId === currentUser.uid) {
+    if (event && currentUser && event.organizerId === currentUser.id) {
       this.isAdmin.set(true);
     }
     this.event.set(event);

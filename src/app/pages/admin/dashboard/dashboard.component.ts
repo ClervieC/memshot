@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const user = this.authService.getCurrentUser();
     if (!user) return;
-    this.eventsSub = this.eventService.getOrganizerEvents$(user.uid).subscribe(evts => {
+    this.eventsSub = this.eventService.getOrganizerEvents$(user.id).subscribe(evts => {
       this.events.set(evts);
       this.loading.set(false);
     });
