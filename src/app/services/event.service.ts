@@ -104,22 +104,33 @@ export class EventService {
     return this.watchTable('photos', 'event_id', eventId, 'uploaded_at', row => this.mapPhoto(row));
   }
 
+  private async insertPhotoRow(eventId: string, url: string, type: 'photo' | 'video', uploaderName?: string): Promise<string> {
+    const { data, error } = await supabase.from('photos').insert({
+      event_id: eventId, url, type, uploader_name: uploaderName || 'Anonyme'
+    }).select('id').single();
+    if (error) {
+      await this.storage.remove([url]);
+      throw error;
+    }
+    const { error: rpcError } = await supabase.rpc('bump_event_photo_count', {
+      p_event_id: eventId, p_delta: 1, p_cover_url: url
+    });
+    if (rpcError) {
+      await supabase.from('photos').delete().eq('id', data.id);
+      await this.storage.remove([url]);
+      throw rpcError;
+    }
+    return url;
+  }
+
   async uploadPhoto(eventId: string, file: File, uploaderName?: string): Promise<string> {
     const url = await this.storage.uploadImage(file, eventId);
-    await supabase.from('photos').insert({
-      event_id: eventId, url, type: 'photo', uploader_name: uploaderName || 'Anonyme'
-    });
-    await supabase.rpc('bump_event_photo_count', { p_event_id: eventId, p_delta: 1, p_cover_url: url });
-    return url;
+    return this.insertPhotoRow(eventId, url, 'photo', uploaderName);
   }
 
   async uploadVideo(eventId: string, file: File, uploaderName?: string, onProgress?: (pct: number) => void): Promise<string> {
     const url = await this.storage.uploadVideo(file, eventId, onProgress);
-    await supabase.from('photos').insert({
-      event_id: eventId, url, type: 'video', uploader_name: uploaderName || 'Anonyme'
-    });
-    await supabase.rpc('bump_event_photo_count', { p_event_id: eventId, p_delta: 1, p_cover_url: url });
-    return url;
+    return this.insertPhotoRow(eventId, url, 'video', uploaderName);
   }
 
   async setEventClosed(eventId: string, closed: boolean): Promise<void> {
