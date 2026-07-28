@@ -1,4 +1,10 @@
 <div class="login-page">
+      <div class="bg-shapes">
+        <div class="shape s1"></div>
+        <div class="shape s2"></div>
+        <div class="shape s3"></div>
+      </div>
+
       <div class="back" (click)="router.navigate(['/'])">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M19 12H5M12 5l-7 7 7 7"/>
@@ -6,19 +12,22 @@
       </div>
 
       <div class="form-wrap">
-        <div class="brand">
+        <div class="brand reveal" style="animation-delay: 0ms">
           <div class="dot"></div>
           <span>{{ 'APP_NAME' | translate }}</span>
         </div>
 
-        <h2>{{ 'LOGIN.TITLE' | translate }}<br><em>{{ 'LOGIN.TITLE_EM' | translate }}</em></h2>
+        <h2 class="reveal" style="animation-delay: 60ms">
+          <ng-container *ngIf="mode() !== 'forgot'">{{ 'LOGIN.TITLE' | translate }}<br><em>{{ 'LOGIN.TITLE_EM' | translate }}</em></ng-container>
+          <em *ngIf="mode() === 'forgot'">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</em>
+        </h2>
 
-        <div class="tabs" *ngIf="mode() !== 'forgot'">
+        <div class="tabs reveal" style="animation-delay: 120ms" *ngIf="mode() !== 'forgot'">
           <button [class.active]="mode() === 'login'" (click)="mode.set('login')">{{ 'LOGIN.TAB_LOGIN' | translate }}</button>
           <button [class.active]="mode() === 'register'" (click)="mode.set('register')">{{ 'LOGIN.TAB_REGISTER' | translate }}</button>
         </div>
 
-        <div class="form" *ngIf="mode() !== 'forgot'">
+        <div class="form reveal" style="animation-delay: 180ms" *ngIf="mode() !== 'forgot'">
           <div class="field">
             <label>{{ 'LOGIN.EMAIL' | translate }}*</label>
             <input type="email" [(ngModel)]="email" placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}" />
@@ -40,7 +49,7 @@
           </div>
         </div>
 
-        <div class="form" *ngIf="mode() === 'forgot'">
+        <div class="form reveal" style="animation-delay: 120ms" *ngIf="mode() === 'forgot'">
           <ng-container *ngIf="!resetSent()">
             <div class="field">
               <label>{{ 'LOGIN.EMAIL' | translate }}*</label>
