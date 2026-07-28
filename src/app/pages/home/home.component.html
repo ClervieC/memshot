@@ -61,21 +61,6 @@
           </button>
         </div>
 
-        <div class="divider">
-          <span>{{ 'HOME.OR' | translate }}</span>
-        </div>
-
-        <div class="organizer">
-            <button class="btn-secondary" (click)="goToAdmin()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                    <path d="M2 17l10 5 10-5"/>
-                    <path d="M2 12l10 5 10-5"/>
-                </svg>
-                {{ 'HOME.ORGANIZER_SPACE' | translate }}
-            </button>
-        </div>
-
         <div class="about-card">
           <div class="about-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -89,6 +74,7 @@
           </div>
         </div>
 
+        <div class="organizer-link" (click)="goToAdmin()">{{ 'HOME.ORGANIZER_SPACE' | translate }}</div>
       </div>
       <div class="lang-wrap">
         <app-lang-switcher></app-lang-switcher>

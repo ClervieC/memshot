@@ -51,7 +51,25 @@
     "ERROR_INVALID_CREDENTIAL": "Incorrect email or password.",
     "ERROR_EMAIL_ALREADY_IN_USE": "This email is already in use.",
     "ERROR_WEAK_PASSWORD": "Password too weak (min 6 characters).",
-    "ERROR_UNKNOWN": "An error occurred."
+    "ERROR_UNKNOWN": "An error occurred.",
+    "FORGOT_PASSWORD": "Forgot password?",
+    "SEND_RESET_LINK": "Send reset link",
+    "RESET_LINK_SENT": "If an account exists with this email, a reset link has just been sent.",
+    "BACK_TO_LOGIN": "Back to login"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "New",
+    "TITLE_EM": "password",
+    "PASSWORD_LABEL": "New password",
+    "CONFIRM_LABEL": "Confirm password",
+    "SUBMIT": "Save",
+    "ERROR_EMPTY": "Please fill in all fields.",
+    "ERROR_MISMATCH": "Passwords do not match.",
+    "ERROR_WEAK_PASSWORD": "Password too weak (min 6 characters).",
+    "ERROR_INVALID_LINK": "This reset link is invalid or has expired.",
+    "ERROR_UNKNOWN": "An error occurred.",
+    "SUCCESS": "Password updated!",
+    "GO_LOGIN": "Go to login"
   },
   "DASHBOARD": {
     "TITLE": "My",

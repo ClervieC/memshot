@@ -16,9 +16,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 export class LoginComponent implements OnInit {
   email = '';
   password = '';
-  mode = signal<'login' | 'register'>('login');
+  mode = signal<'login' | 'register' | 'forgot'>('login');
   loading = signal(false);
   error = signal('');
+  resetSent = signal(false);
 
   router = inject(Router);
   private authService = inject(AuthService);
@@ -30,6 +31,10 @@ export class LoginComponent implements OnInit {
   }
 
   async submit() {
+    if (this.mode() === 'forgot') {
+      await this.submitForgotPassword();
+      return;
+    }
     if (!this.email || !this.password) {
       this.error.set(this.translate.instant('LOGIN.ERROR_EMPTY'));
       return;
@@ -49,6 +54,29 @@ export class LoginComponent implements OnInit {
                   e.code === 'weak_password' ? this.translate.instant('LOGIN.ERROR_WEAK_PASSWORD') :
                   this.translate.instant('LOGIN.ERROR_UNKNOWN');
       this.error.set(msg);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  showForgotPassword() {
+    this.mode.set('forgot');
+    this.error.set('');
+    this.resetSent.set(false);
+  }
+
+  async submitForgotPassword() {
+    if (!this.email) {
+      this.error.set(this.translate.instant('LOGIN.ERROR_EMPTY'));
+      return;
+    }
+    this.loading.set(true);
+    this.error.set('');
+    try {
+      await this.authService.resetPassword(this.email);
+      this.resetSent.set(true);
+    } catch {
+      this.error.set(this.translate.instant('LOGIN.ERROR_UNKNOWN'));
     } finally {
       this.loading.set(false);
     }

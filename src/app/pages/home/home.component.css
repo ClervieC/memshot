@@ -82,24 +82,15 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .divider {
-      display: flex; align-items: center; gap: 1rem;
-      margin: 1.5rem 0; color: var(--text-muted-soft); font-size: 0.8rem;
+    .organizer-link {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted-soft);
+      cursor: pointer;
+      margin-top: 2rem;
+      text-decoration: underline;
     }
-    .divider::before, .divider::after {
-      content: ''; flex: 1; height: 1px; background: rgba(29,28,24,0.12);
-    }
-
-    .btn-secondary {
-      display: flex; align-items: center; justify-content: center; gap: 0.625rem;
-      background: transparent; border: 1px solid rgba(29,28,24,0.12);
-      color: var(--text-muted); padding: 0.875rem 1.5rem; border-radius: 14px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .btn-secondary:hover { background: rgba(29,28,24,0.06); color: var(--text); border-color: rgba(29,28,24,0.18); }
-    .btn-secondary svg { width: 16px; height: 16px; }
-    .organizer { display: flex; align-items: center; justify-content: center; }
+    .organizer-link:hover { color: var(--text-muted); }
     .lang-wrap { position: fixed; top: 1rem; right: 1rem; }
 
     .about-card {

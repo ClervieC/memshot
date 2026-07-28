@@ -29,6 +29,9 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
+# Claude Code local permission log (accumulates command text, can include secrets)
+.claude/settings.json
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/

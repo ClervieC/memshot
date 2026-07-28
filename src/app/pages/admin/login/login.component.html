@@ -13,12 +13,12 @@
 
         <h2>{{ 'LOGIN.TITLE' | translate }}<br><em>{{ 'LOGIN.TITLE_EM' | translate }}</em></h2>
 
-        <div class="tabs">
+        <div class="tabs" *ngIf="mode() !== 'forgot'">
           <button [class.active]="mode() === 'login'" (click)="mode.set('login')">{{ 'LOGIN.TAB_LOGIN' | translate }}</button>
           <button [class.active]="mode() === 'register'" (click)="mode.set('register')">{{ 'LOGIN.TAB_REGISTER' | translate }}</button>
         </div>
 
-        <div class="form">
+        <div class="form" *ngIf="mode() !== 'forgot'">
           <div class="field">
             <label>{{ 'LOGIN.EMAIL' | translate }}*</label>
             <input type="email" [(ngModel)]="email" placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}" />
@@ -34,6 +34,32 @@
             <span *ngIf="!loading()">{{ mode() === 'login' ? ('LOGIN.SUBMIT_LOGIN' | translate) : ('LOGIN.SUBMIT_REGISTER' | translate) }}</span>
             <span *ngIf="loading()" class="spinner"></span>
           </button>
+
+          <div class="forgot-link" *ngIf="mode() === 'login'" (click)="showForgotPassword()">
+            {{ 'LOGIN.FORGOT_PASSWORD' | translate }}
+          </div>
+        </div>
+
+        <div class="form" *ngIf="mode() === 'forgot'">
+          <ng-container *ngIf="!resetSent()">
+            <div class="field">
+              <label>{{ 'LOGIN.EMAIL' | translate }}*</label>
+              <input type="email" [(ngModel)]="email" placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}" />
+            </div>
+
+            <div class="error" *ngIf="error()">{{ error() }}</div>
+
+            <button class="btn-submit" (click)="submit()" [disabled]="loading()">
+              <span *ngIf="!loading()">{{ 'LOGIN.SEND_RESET_LINK' | translate }}</span>
+              <span *ngIf="loading()" class="spinner"></span>
+            </button>
+          </ng-container>
+
+          <div class="success" *ngIf="resetSent()">{{ 'LOGIN.RESET_LINK_SENT' | translate }}</div>
+
+          <div class="forgot-link" (click)="mode.set('login')">
+            {{ 'LOGIN.BACK_TO_LOGIN' | translate }}
+          </div>
         </div>
       </div>
       <div class="lang-wrap">

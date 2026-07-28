@@ -51,7 +51,25 @@
     "ERROR_INVALID_CREDENTIAL": "Email ou mot de passe incorrect.",
     "ERROR_EMAIL_ALREADY_IN_USE": "Cet email est déjà utilisé.",
     "ERROR_WEAK_PASSWORD": "Mot de passe trop faible (6 caractères min).",
-    "ERROR_UNKNOWN": "Une erreur est survenue."
+    "ERROR_UNKNOWN": "Une erreur est survenue.",
+    "FORGOT_PASSWORD": "Mot de passe oublié ?",
+    "SEND_RESET_LINK": "Envoyer le lien",
+    "RESET_LINK_SENT": "Si un compte existe avec cet email, un lien de réinitialisation vient d'être envoyé.",
+    "BACK_TO_LOGIN": "Retour à la connexion"
+  },
+  "RESET_PASSWORD": {
+    "TITLE": "Nouveau",
+    "TITLE_EM": "mot de passe",
+    "PASSWORD_LABEL": "Nouveau mot de passe",
+    "CONFIRM_LABEL": "Confirmer le mot de passe",
+    "SUBMIT": "Enregistrer",
+    "ERROR_EMPTY": "Veuillez remplir tous les champs.",
+    "ERROR_MISMATCH": "Les mots de passe ne correspondent pas.",
+    "ERROR_WEAK_PASSWORD": "Mot de passe trop faible (6 caractères min).",
+    "ERROR_INVALID_LINK": "Ce lien de réinitialisation est invalide ou a expiré.",
+    "ERROR_UNKNOWN": "Une erreur est survenue.",
+    "SUCCESS": "Mot de passe mis à jour !",
+    "GO_LOGIN": "Aller à la connexion"
   },
   "DASHBOARD": {
     "TITLE": "Mes",
