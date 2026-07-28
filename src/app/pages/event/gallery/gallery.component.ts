@@ -383,9 +383,15 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
   onPhotoLoadError(photo: Photo) {
     if (this.brokenPhotoIds.has(photo.id)) return;
     this.brokenPhotoIds.add(photo.id);
+    const wasCover = this.isCover(photo);
     this.photos.update(ps => ps.filter(p => p.id !== photo.id));
     if (this.lightboxPhoto()?.id === photo.id) this.lightboxPhoto.set(null);
     this.eventService.deletePhoto(this.eventId, photo.id).catch(() => {});
+    if (wasCover) {
+      const newUrl = this.photos()[0]?.url ?? '';
+      this.eventService.clearStaleCover(this.eventId, photo.url, newUrl).catch(() => {});
+      this.event.update(ev => ev ? { ...ev, coverUrl: newUrl } : ev);
+    }
   }
 
   async downloadPhoto(photo: Photo, e: MouseEvent) {

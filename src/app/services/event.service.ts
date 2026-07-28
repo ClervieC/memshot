@@ -141,6 +141,10 @@ export class EventService {
     await supabase.from('events').update({ cover_url: url }).eq('id', eventId);
   }
 
+  async clearStaleCover(eventId: string, staleUrl: string, newUrl: string): Promise<void> {
+    await supabase.rpc('clear_stale_cover', { p_event_id: eventId, p_stale_url: staleUrl, p_new_url: newUrl });
+  }
+
   async deletePhoto(eventId: string, photoId: string): Promise<void> {
     const { data: photo } = await supabase.from('photos').select('url').eq('id', photoId).maybeSingle();
     await supabase.from('photos').delete().eq('id', photoId);
