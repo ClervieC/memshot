@@ -16,6 +16,18 @@ export class StorageService {
     return supabase.storage.from(this.bucket).getPublicUrl(path).data.publicUrl;
   }
 
+  private pathFromUrl(url: string): string | null {
+    const marker = `/object/public/${this.bucket}/`;
+    const idx = url.indexOf(marker);
+    return idx === -1 ? null : url.slice(idx + marker.length);
+  }
+
+  async remove(urls: string[]): Promise<void> {
+    const paths = urls.map(u => this.pathFromUrl(u)).filter((p): p is string => !!p);
+    if (paths.length === 0) return;
+    await supabase.storage.from(this.bucket).remove(paths);
+  }
+
   async uploadImage(file: File, folder?: string): Promise<string> {
     const path = this.buildPath(file, folder);
     const { error } = await supabase.storage.from(this.bucket).upload(path, file, {

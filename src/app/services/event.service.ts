@@ -131,13 +131,17 @@ export class EventService {
   }
 
   async deletePhoto(eventId: string, photoId: string): Promise<void> {
+    const { data: photo } = await supabase.from('photos').select('url').eq('id', photoId).maybeSingle();
     await supabase.from('photos').delete().eq('id', photoId);
     await supabase.rpc('bump_event_photo_count', { p_event_id: eventId, p_delta: -1 });
+    if (photo?.url) await this.storage.remove([photo.url]);
   }
 
   async deleteEvent(eventId: string): Promise<void> {
-    // photos are removed automatically via the events -> photos cascade FK
+    const { data: photos } = await supabase.from('photos').select('url').eq('event_id', eventId);
+    // photo rows are removed automatically via the events -> photos cascade FK
     await supabase.from('events').delete().eq('id', eventId);
+    if (photos?.length) await this.storage.remove(photos.map(p => p.url));
   }
 
   getOrganizerEvents$(organizerId: string): Observable<Event[]> {
