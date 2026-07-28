@@ -13,9 +13,20 @@
       overflow: hidden;
     }
 
-    .bg-glow {
-      position: fixed; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse 60% 60% at 50% 0%, rgba(200,169,122,0.14), transparent);
+    .bg-shapes { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .shape { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.22; }
+    .s1 { width: 400px; height: 400px; background: rgba(200,169,122,0.18); top: -100px; right: -100px; animation: drift 8s ease-in-out infinite; }
+    .s2 { width: 300px; height: 300px; background: rgba(139,160,195,0.18); bottom: -50px; left: -80px; animation: drift 10s ease-in-out infinite reverse; }
+    .s3 { width: 200px; height: 200px; background: rgba(214,179,159,0.18); top: 50%; left: 50%; animation: drift 12s ease-in-out infinite; }
+    @keyframes drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, -20px); } }
+
+    .reveal {
+      opacity: 0;
+      animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes revealUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .loading-state { display: flex; align-items: center; justify-content: center; }

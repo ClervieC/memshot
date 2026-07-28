@@ -6,7 +6,7 @@
       </div>
 
       <div class="content">
-        <div class="logo">
+        <div class="logo reveal" style="animation-delay: 0ms">
           <div class="logo-icon">
             <svg width="50" height="50" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
               <circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" stroke-width="6" stroke-dasharray="8 10" stroke-linecap="round"/>
@@ -26,10 +26,10 @@
           <span>{{ 'APP_NAME' | translate }}</span>
         </div>
 
-        <h1>{{ 'HOME.TITLE' | translate }}<br><em>{{ 'HOME.TITLE_EM' | translate }}</em></h1>
-        <p class="subtitle">{{ 'HOME.SUBTITLE' | translate }}</p>
+        <h1 class="reveal" style="animation-delay: 80ms">{{ 'HOME.TITLE' | translate }}<br><em>{{ 'HOME.TITLE_EM' | translate }}</em></h1>
+        <p class="subtitle reveal" style="animation-delay: 150ms">{{ 'HOME.SUBTITLE' | translate }}</p>
 
-        <div class="code-form">
+        <div class="code-form reveal" style="animation-delay: 220ms">
           <div class="input-wrap" [class.error]="error()">
             <input
               type="text"
@@ -61,7 +61,7 @@
           </button>
         </div>
 
-        <div class="about-card">
+        <div class="about-card reveal" style="animation-delay: 290ms">
           <div class="about-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
@@ -74,7 +74,7 @@
           </div>
         </div>
 
-        <div class="organizer-link" (click)="goToAdmin()">{{ 'HOME.ORGANIZER_SPACE' | translate }}</div>
+        <div class="organizer-link reveal" style="animation-delay: 360ms" (click)="goToAdmin()">{{ 'HOME.ORGANIZER_SPACE' | translate }}</div>
       </div>
       <div class="lang-wrap">
         <app-lang-switcher></app-lang-switcher>

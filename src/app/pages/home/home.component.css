@@ -19,6 +19,15 @@
 
     .content { position: relative; z-index: 1; max-width: 360px; width: 100%; }
 
+    .reveal {
+      opacity: 0;
+      animation: revealUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes revealUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .logo {
       display: flex; align-items: center; gap: 0.75rem;
       margin-bottom: 2.5rem; color: var(--text);
