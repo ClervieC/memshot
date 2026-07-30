@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { superAdminGuard } from './guards/super-admin.guard';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,15 @@ export const routes: Routes = [
   {
     path: 'event/:eventId/gallery',
     loadComponent: () => import('./pages/event/gallery/gallery.component').then(m => m.GalleryComponent)
+  },
+  {
+    path: 'admin/superadmin',
+    loadComponent: () => import('./pages/admin/superadmin/superadmin.component').then(m => m.SuperadminComponent),
+    canActivate: [authGuard, superAdminGuard]
+  },
+  {
+    path: 'privacy',
+    loadComponent: () => import('./pages/privacy/privacy.component').then(m => m.PrivacyComponent)
   },
   { path: '**', redirectTo: '' }
 ];

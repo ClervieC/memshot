@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../../services/event.service';
@@ -11,7 +11,7 @@ import jsQR from 'jsqr';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, LangSwitcherComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, LangSwitcherComponent, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -22,6 +22,7 @@ export class HomeComponent {
   code = '';
   username = '';
   loading = signal(false);
+  currentYear = new Date().getFullYear();
 
   constructor() {
     const lastEventId = localStorage.getItem('lastEventId');

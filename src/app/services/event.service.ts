@@ -162,4 +162,29 @@ export class EventService {
   getOrganizerEvents$(organizerId: string): Observable<Event[]> {
     return this.watchTable('events', 'organizer_id', organizerId, 'created_at', row => this.mapEvent(row));
   }
+
+  getAllEvents$(): Observable<Event[]> {
+    return new Observable(observer => {
+      const fetch = async () => {
+        const { data, error } = await supabase
+          .from('events').select('*').order('created_at', { ascending: false });
+        if (!error) observer.next((data ?? []).map(r => this.mapEvent(r)));
+      };
+      fetch();
+      const channel = supabase.channel('all_events')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, fetch)
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    });
+  }
+
+  async createEventForOrganizer(organizerId: string, name: string, description: string, password: string, date: Date): Promise<string> {
+    const passwordHash = await this.hashPassword(password);
+    const { data, error } = await supabase.from('events').insert({
+      name, description, password, password_hash: passwordHash,
+      organizer_id: organizerId, date: date.toISOString()
+    }).select('id').single();
+    if (error) throw error;
+    return data.id;
+  }
 }

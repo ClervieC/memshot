@@ -1,0 +1,111 @@
+<div class="sa-page">
+  <header class="sa-header">
+    <div class="sa-brand">
+      <span class="sa-badge">Super Admin</span>
+      <span class="sa-title">Memshot</span>
+    </div>
+    <div class="sa-actions">
+      <button class="btn-create" (click)="showCreateForm.set(!showCreateForm())">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Créer un événement
+      </button>
+      <button class="btn-logout" (click)="logout()">Déconnexion</button>
+    </div>
+  </header>
+
+  <!-- Create form -->
+  <div class="create-panel" *ngIf="showCreateForm()">
+    <h3>Créer un événement pour un organisateur</h3>
+    <div class="form-grid">
+      <label>
+        <span>ID de l'organisateur *</span>
+        <input type="text" [(ngModel)]="form.organizerId" placeholder="UUID Supabase de l'utilisateur" />
+      </label>
+      <label>
+        <span>Nom de l'événement *</span>
+        <input type="text" [(ngModel)]="form.name" placeholder="Mariage de Sophie & Pierre" />
+      </label>
+      <label>
+        <span>Description</span>
+        <input type="text" [(ngModel)]="form.description" placeholder="Description..." />
+      </label>
+      <label>
+        <span>Code participants *</span>
+        <input type="text" [(ngModel)]="form.password" placeholder="ex: mariage2025" />
+      </label>
+      <label>
+        <span>Date *</span>
+        <input type="date" [(ngModel)]="form.date" />
+      </label>
+    </div>
+    <p class="form-error" *ngIf="createError()">{{ createError() }}</p>
+    <div class="form-footer">
+      <button class="btn-cancel" (click)="showCreateForm.set(false)">Annuler</button>
+      <button class="btn-submit" (click)="createEvent()" [disabled]="createLoading()">
+        {{ createLoading() ? 'Création…' : 'Créer' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-num">{{ events().length }}</span>
+      <span class="stat-label">événements</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">{{ events().reduce(0, (acc, e) => acc + e.photoCount, 0) }}</span>
+      <span class="stat-label">photos au total</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">{{ events().filter(e => !e.closed).length }}</span>
+      <span class="stat-label">événements live</span>
+    </div>
+  </div>
+
+  <!-- Events table -->
+  <div class="table-wrap" *ngIf="!loading()">
+    <table class="events-table">
+      <thead>
+        <tr>
+          <th>Événement</th>
+          <th>Date</th>
+          <th>Organisateur</th>
+          <th>Photos</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let event of events()" (click)="openEvent(event)">
+          <td class="td-name">{{ event.name }}</td>
+          <td class="td-date">{{ event.date | date:'dd/MM/yyyy' }}</td>
+          <td class="td-org" [title]="event.organizerId">{{ shortId(event.organizerId) }}</td>
+          <td class="td-count">{{ event.photoCount }}</td>
+          <td>
+            <span class="badge" [class.live]="!event.closed" [class.closed]="event.closed">
+              {{ event.closed ? 'Fermé' : 'Live' }}
+            </span>
+          </td>
+          <td class="td-actions" (click)="$event.stopPropagation()">
+            <button class="act-btn" (click)="copyUrl(event, $event)" title="Copier le lien">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+            <button class="act-btn" (click)="toggleClosed(event, $event)" [title]="event.closed ? 'Rouvrir' : 'Fermer'">
+              <svg *ngIf="!event.closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <svg *ngIf="event.closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+            </button>
+            <button class="act-btn danger" (click)="deleteEvent(event, $event)" title="Supprimer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="empty" *ngIf="!events().length">Aucun événement.</p>
+  </div>
+
+  <div class="loading-state" *ngIf="loading()">
+    <div class="spin"></div>
+  </div>
+</div>

@@ -188,6 +188,15 @@
       border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.4);
     }
 
+    .home-footer {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      margin-top: 2rem; padding-bottom: 1rem;
+      font-size: 0.72rem; color: var(--text-muted-soft);
+    }
+    .home-footer a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    .home-footer a:hover { color: var(--text-muted); }
+
     @media (min-width: 768px) {
       .home { padding: 3rem; align-items: center; }
       h1 { font-size: 3.5rem; }

@@ -76,6 +76,12 @@
 
         <div class="organizer-link reveal" style="animation-delay: 360ms" (click)="goToAdmin()">{{ 'HOME.ORGANIZER_SPACE' | translate }}</div>
       </div>
+
+      <footer class="home-footer">
+        <a routerLink="/privacy">Confidentialité</a>
+        <span>·</span>
+        <span>© {{ currentYear }} Memshot</span>
+      </footer>
       <div class="lang-wrap">
         <app-lang-switcher></app-lang-switcher>
       </div>

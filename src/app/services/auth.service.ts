@@ -50,6 +50,10 @@ export class AuthService {
     return this.currentUser;
   }
 
+  isSuperAdmin(): boolean {
+    return this.currentUser?.email === 'admin@google.com';
+  }
+
   async signInAnonymously() {
     if (this.currentUser) return;
     try {
