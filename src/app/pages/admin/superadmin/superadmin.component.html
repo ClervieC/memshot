@@ -54,11 +54,11 @@
       <span class="stat-label">événements</span>
     </div>
     <div class="stat-card">
-      <span class="stat-num">{{ events().reduce(0, (acc, e) => acc + e.photoCount, 0) }}</span>
+      <span class="stat-num">{{ totalPhotos() }}</span>
       <span class="stat-label">photos au total</span>
     </div>
     <div class="stat-card">
-      <span class="stat-num">{{ events().filter(e => !e.closed).length }}</span>
+      <span class="stat-num">{{ liveCount() }}</span>
       <span class="stat-label">événements live</span>
     </div>
   </div>

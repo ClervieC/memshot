@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +23,9 @@ export class SuperadminComponent implements OnInit, OnDestroy {
   showCreateForm = signal(false);
   createError = signal('');
   createLoading = signal(false);
+
+  totalPhotos = computed(() => this.events().reduce((acc, e) => acc + e.photoCount, 0));
+  liveCount = computed(() => this.events().filter(e => !e.closed).length);
 
   form = {
     organizerId: '',
