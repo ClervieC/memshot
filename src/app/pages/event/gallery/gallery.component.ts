@@ -1,8 +1,10 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, signal, computed, inject, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { EventService } from '../../../services/event.service';
 import { AuthService } from '../../../services/auth.service';
+import { FeedbackService } from '../../../services/feedback.service';
 import { Event, Photo } from '../../../models/event.model';
 import { Subscription } from 'rxjs';
 import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
@@ -12,7 +14,7 @@ import { ConfirmService } from '../../../services/confirm.service';
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [CommonModule, LangSwitcherComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, LangSwitcherComponent, TranslateModule],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.css'
 })
@@ -43,6 +45,22 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
   slideshowPhoto = computed(() => this.photos()[this.slideshowIdx()] ?? null);
   private slideshowTimer?: ReturnType<typeof setInterval>;
 
+  // Contact modal
+  showContactModal = signal(false);
+  contactName = '';
+  contactMessage = '';
+  contactSending = signal(false);
+  contactSent = signal(false);
+
+  // Review popup
+  showReviewModal = signal(false);
+  reviewRating = signal(0);
+  reviewHover = signal(0);
+  reviewComment = '';
+  reviewSending = signal(false);
+  reviewSent = signal(false);
+
+  private reviewTriggered = false;
   private brokenPhotoIds = new Set<string>();
   private lbTouchStartX = 0;
   private lbTouchStartY = 0;
@@ -59,6 +77,7 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private eventService = inject(EventService);
   private authService = inject(AuthService);
+  private feedbackService = inject(FeedbackService);
   private confirmService = inject(ConfirmService);
 
   async ngOnInit() {
@@ -80,6 +99,13 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.photosSub = this.eventService.getEventPhotos$(this.eventId).subscribe(photos => {
       this.photos.set(photos.filter(p => !this.brokenPhotoIds.has(p.id)));
+      if (!this.reviewTriggered && !this.isAdmin() && photos.length >= 5) {
+        const key = `reviewed_${this.eventId}`;
+        if (!localStorage.getItem(key)) {
+          this.reviewTriggered = true;
+          setTimeout(() => this.showReviewModal.set(true), 2500);
+        }
+      }
     });
   }
 
@@ -255,8 +281,46 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  async sendContact() {
+    if (!this.contactMessage.trim()) return;
+    this.contactSending.set(true);
+    try {
+      await this.feedbackService.sendMessage(this.eventId, this.contactName.trim() || null, this.contactMessage.trim());
+      this.contactSent.set(true);
+      this.contactMessage = '';
+      this.contactName = '';
+      setTimeout(() => { this.contactSent.set(false); this.showContactModal.set(false); }, 2000);
+    } catch {
+      // silent fail — don't block the user
+    } finally {
+      this.contactSending.set(false);
+    }
+  }
+
+  async sendReview() {
+    if (!this.reviewRating()) return;
+    this.reviewSending.set(true);
+    try {
+      await this.feedbackService.sendReview(this.eventId, this.reviewRating(), this.reviewComment.trim() || null);
+      localStorage.setItem(`reviewed_${this.eventId}`, '1');
+      this.reviewSent.set(true);
+      setTimeout(() => { this.reviewSent.set(false); this.showReviewModal.set(false); }, 2000);
+    } catch {
+      this.showReviewModal.set(false);
+    } finally {
+      this.reviewSending.set(false);
+    }
+  }
+
+  dismissReview() {
+    localStorage.setItem(`reviewed_${this.eventId}`, '1');
+    this.showReviewModal.set(false);
+  }
+
   goBack() {
-    if (this.isAdmin()) {
+    if (this.authService.isSuperAdmin()) {
+      this.router.navigate(['/admin/superadmin']);
+    } else if (this.isAdmin()) {
       this.router.navigate(['/admin/dashboard']);
     } else {
       localStorage.removeItem('lastEventId');

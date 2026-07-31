@@ -43,7 +43,8 @@ export class EventComponent implements OnInit {
     } finally {
       this.loading.set(false);
     }
-    const autoCode = this.route.snapshot.queryParamMap.get('code');
+    const autoCode = this.route.snapshot.queryParamMap.get('code')
+      || localStorage.getItem(`code_${this.eventId}`);
     if (autoCode) {
       this.password = autoCode;
       await this.enter();
@@ -67,6 +68,7 @@ export class EventComponent implements OnInit {
       if (valid) {
         localStorage.setItem(`event_${this.eventId}`, 'true');
         localStorage.setItem('lastEventId', this.eventId);
+        localStorage.setItem(`code_${this.eventId}`, this.password);
         await this.authService.signInAnonymously();
         this.username = localStorage.getItem('username') || '';
         this.showNameModal.set(true);

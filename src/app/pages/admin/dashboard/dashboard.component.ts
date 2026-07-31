@@ -1,29 +1,42 @@
-import { Component, OnInit, OnDestroy, signal, inject, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked, signal, inject, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { EventService } from '../../../services/event.service';
 import { AuthService } from '../../../services/auth.service';
+import { FeedbackService, SupportMessage } from '../../../services/feedback.service';
 import { QrService } from '../../../services/qr.service';
 import { Event } from '../../../models/event.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmService } from '../../../services/confirm.service';
 import { LangSwitcherComponent } from 'src/app/shared/lang-switcher/lang-switcher.component';
 import { Subscription } from 'rxjs';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, TranslateModule, LangSwitcherComponent],
+  imports: [CommonModule, FormsModule, TranslateModule, LangSwitcherComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewChecked {
   events = signal<Event[]>([]);
   loading = signal(true);
   showHelp = signal(false);
   qrModal = signal<{ event: Event; dataUrl: string; loading: boolean } | null>(null);
   copied = signal(false);
   swipedEventId = signal<string | null>(null);
+
+  // Support chat
+  showSupport = signal(false);
+  supportMessages = signal<SupportMessage[]>([]);
+  supportInput = '';
+  supportSending = signal(false);
+  private currentUserId = '';
+  private supportChannel?: RealtimeChannel;
+  private shouldScrollChat = false;
+  @ViewChild('chatBody') chatBodyRef?: ElementRef<HTMLElement>;
 
   private eventsSub?: Subscription;
   private _swipeEl: HTMLElement | null = null;
@@ -35,20 +48,62 @@ export class DashboardComponent implements OnInit, OnDestroy {
   router = inject(Router);
   private eventService = inject(EventService);
   private authService = inject(AuthService);
+  private feedbackService = inject(FeedbackService);
   private qrService = inject(QrService);
   private confirmService = inject(ConfirmService);
 
   ngOnInit() {
     const user = this.authService.getCurrentUser();
     if (!user) return;
+    this.currentUserId = user.id;
     this.eventsSub = this.eventService.getOrganizerEvents$(user.id).subscribe(evts => {
       this.events.set(evts);
       this.loading.set(false);
     });
+    this.loadSupportMessages();
+    this.supportChannel = this.feedbackService.subscribeSupportMessages(this.currentUserId, () => this.loadSupportMessages());
   }
 
   ngOnDestroy() {
     this.eventsSub?.unsubscribe();
+    this.supportChannel?.unsubscribe();
+  }
+
+  ngAfterViewChecked() {
+    if (this.shouldScrollChat && this.chatBodyRef) {
+      const el = this.chatBodyRef.nativeElement;
+      el.scrollTop = el.scrollHeight;
+      this.shouldScrollChat = false;
+    }
+  }
+
+  private async loadSupportMessages() {
+    try {
+      const msgs = await this.feedbackService.getSupportMessages(this.currentUserId);
+      this.supportMessages.set(msgs);
+      this.shouldScrollChat = true;
+    } catch { }
+  }
+
+  async openSupport() {
+    this.showSupport.set(true);
+    await this.loadSupportMessages();
+  }
+
+  async sendSupport() {
+    const content = this.supportInput.trim();
+    if (!content || this.supportSending()) return;
+    this.supportSending.set(true);
+    this.supportInput = '';
+    try {
+      await this.feedbackService.sendSupportMessage(this.currentUserId, this.currentUserId, content);
+      await this.loadSupportMessages();
+    } catch { }
+    this.supportSending.set(false);
+  }
+
+  isMine(msg: SupportMessage): boolean {
+    return msg.sender_id === this.currentUserId;
   }
 
   @HostListener('document:click')

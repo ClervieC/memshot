@@ -11,7 +11,24 @@
         </svg>
       </div>
 
-      <div class="form-wrap">
+      <!-- Email confirmation screen -->
+      <div class="form-wrap" *ngIf="registerSuccess()">
+        <div class="confirm-screen">
+          <div class="confirm-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"/>
+            </svg>
+          </div>
+          <h2>{{ 'LOGIN.CONFIRM_TITLE' | translate }}</h2>
+          <p>{{ 'LOGIN.CONFIRM_DESC' | translate : { email: registeredEmail() } }}</p>
+          <p class="confirm-hint">{{ 'LOGIN.CONFIRM_HINT' | translate }}</p>
+          <button class="btn-back-login" (click)="registerSuccess.set(false); mode.set('login')">
+            {{ 'LOGIN.BACK_TO_LOGIN' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-wrap" *ngIf="!registerSuccess()">
         <div class="brand reveal" style="animation-delay: 0ms">
           <div class="dot"></div>
           <span>{{ 'APP_NAME' | translate }}</span>

@@ -16,8 +16,21 @@ export class AuthService {
   private currentUser: User | null = null;
 
   constructor() {
-    supabase.auth.getSession().then(({ data }) => this.currentUser = data.session?.user ?? null);
     supabase.auth.onAuthStateChange((_event, session) => this.currentUser = session?.user ?? null);
+  }
+
+  async initialize(): Promise<void> {
+    const { data: { session } } = await supabase.auth.getSession();
+    this.currentUser = session?.user ?? null;
+    if (!session) {
+      const hasEvent = Object.keys(localStorage).some(k => k.startsWith('event_'));
+      if (hasEvent) {
+        try {
+          const { data } = await supabase.auth.signInAnonymously();
+          this.currentUser = data.user;
+        } catch { }
+      }
+    }
   }
 
   async login(email: string, password: string) {
@@ -51,7 +64,7 @@ export class AuthService {
   }
 
   isSuperAdmin(): boolean {
-    return this.currentUser?.email === 'admin@google.com';
+    return this.currentUser?.id === '83104e18-b209-412a-adeb-19af2457833f';
   }
 
   async signInAnonymously() {

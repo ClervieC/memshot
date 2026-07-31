@@ -55,7 +55,10 @@
     "FORGOT_PASSWORD": "Forgot password?",
     "SEND_RESET_LINK": "Send reset link",
     "RESET_LINK_SENT": "If an account exists with this email, a reset link has just been sent.",
-    "BACK_TO_LOGIN": "Back to login"
+    "BACK_TO_LOGIN": "Back to login",
+    "CONFIRM_TITLE": "Check your emails",
+    "CONFIRM_DESC": "A confirmation link has been sent to {{email}}.",
+    "CONFIRM_HINT": "Click the link in the email to activate your account, then sign in."
   },
   "RESET_PASSWORD": {
     "TITLE": "New",

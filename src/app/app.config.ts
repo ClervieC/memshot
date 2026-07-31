@@ -5,19 +5,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
-import { supabase } from './core/supabase.client';
+import { AuthService } from './services/auth.service';
 
-function initAuth() {
-  return () => new Promise<void>(async resolve => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      const hasEvent = Object.keys(localStorage).some(k => k.startsWith('event_'));
-      if (hasEvent) {
-        try { await supabase.auth.signInAnonymously(); } catch { /* ignore */ }
-      }
-    }
-    resolve();
-  });
+function initAuth(auth: AuthService) {
+  return () => auth.initialize();
 }
 
 export const appConfig: ApplicationConfig = {
@@ -38,6 +29,6 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    { provide: APP_INITIALIZER, useFactory: initAuth, multi: true },
+    { provide: APP_INITIALIZER, useFactory: initAuth, deps: [AuthService], multi: true },
   ]
 };

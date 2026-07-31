@@ -189,6 +189,29 @@
 
     .lang-wrap { position: fixed; top: 1rem; right: 1rem; }
 
+    .confirm-screen {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; gap: 0.75rem; padding: 1rem 0;
+    }
+    .confirm-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(200,169,122,0.12); border: 1px solid rgba(200,169,122,0.25);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent); margin-bottom: 0.5rem;
+    }
+    .confirm-icon svg { width: 28px; height: 28px; }
+    .confirm-screen h2 { font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 300; margin: 0; }
+    .confirm-screen p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin: 0; }
+    .confirm-hint { font-size: 0.82rem !important; }
+    .btn-back-login {
+      margin-top: 0.5rem; background: transparent;
+      border: 1px solid rgba(29,28,24,0.12); color: var(--text-muted);
+      padding: 0.75rem 1.5rem; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-back-login:hover { background: rgba(29,28,24,0.06); color: var(--text); }
+
     @media (max-width: 390px) {
       h2 { font-size: 2rem; margin-bottom: 1.5rem; }
       .brand { margin-bottom: 2rem; }

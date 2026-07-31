@@ -91,6 +91,24 @@
               {{ linkCopied() ? ('GALLERY.LINK_COPIED' | translate) : ('GALLERY.SHARE' | translate) }}
             </button>
 
+            <!-- Contact organizer (guests only) -->
+            <button class="menu-item" *ngIf="!isAdmin()"
+              (click)="showContactModal.set(true); showHeaderMenu.set(false)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              Contacter l'organisateur
+            </button>
+            <!-- Leave a review (guests only) -->
+            <button class="menu-item" *ngIf="!isAdmin()"
+              (click)="showReviewModal.set(true); showHeaderMenu.set(false)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              Laisser un avis
+            </button>
+
             <!-- Help -->
             <button class="menu-item"
               (click)="showHelp.set(true); showHeaderMenu.set(false)">
@@ -352,6 +370,84 @@
         {{ 'GALLERY.BY' | translate: { name: slideshowPhoto()!.uploaderName } }}
       </span>
       <span class="ss-counter">{{ slideshowIdx() + 1 }} / {{ photos().length }}</span>
+    </div>
+  </div>
+
+  <!-- Contact organizer modal -->
+  <div class="sheet-backdrop" *ngIf="showContactModal()" (click)="showContactModal.set(false)">
+    <div class="bottom-sheet" (click)="$event.stopPropagation()">
+      <div class="sheet-header">
+        <h2>Contacter l'organisateur</h2>
+        <button class="sheet-close" (click)="showContactModal.set(false)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <ng-container *ngIf="!contactSent()">
+        <div class="sheet-field">
+          <label>Votre prénom (optionnel)</label>
+          <input type="text" [(ngModel)]="contactName" placeholder="Sophie" />
+        </div>
+        <div class="sheet-field">
+          <label>Message *</label>
+          <textarea [(ngModel)]="contactMessage" placeholder="Votre message à l'organisateur…" rows="4"></textarea>
+        </div>
+        <button class="sheet-btn" (click)="sendContact()" [disabled]="contactSending() || !contactMessage.trim()">
+          <span class="btn-spin-sm light" *ngIf="contactSending()"></span>
+          <ng-container *ngIf="!contactSending()">Envoyer</ng-container>
+        </button>
+      </ng-container>
+      <div class="sheet-success" *ngIf="contactSent()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Message envoyé !
+      </div>
+    </div>
+  </div>
+
+  <!-- Review popup -->
+  <div class="sheet-backdrop" *ngIf="showReviewModal()" (click)="dismissReview()">
+    <div class="bottom-sheet review-sheet" (click)="$event.stopPropagation()">
+      <div class="sheet-header">
+        <h2>Votre avis</h2>
+        <button class="sheet-close" (click)="dismissReview()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <ng-container *ngIf="!reviewSent()">
+        <p class="review-hint">Comment vous trouvez l'expérience Memshot ?</p>
+        <div class="star-row">
+          <button class="star-btn" *ngFor="let s of [1,2,3,4,5]"
+            (mouseenter)="reviewHover.set(s)"
+            (mouseleave)="reviewHover.set(0)"
+            (click)="reviewRating.set(s)">
+            <svg viewBox="0 0 24 24"
+              [attr.fill]="s <= (reviewHover() || reviewRating()) ? '#c8a97a' : 'none'"
+              stroke="#c8a97a" stroke-width="1.5">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </button>
+        </div>
+        <div class="sheet-field" *ngIf="reviewRating() > 0">
+          <label>Un commentaire ? (optionnel)</label>
+          <textarea [(ngModel)]="reviewComment" placeholder="Dites-nous ce que vous pensez…" rows="3"></textarea>
+        </div>
+        <button class="sheet-btn" (click)="sendReview()" [disabled]="reviewSending() || !reviewRating()">
+          <span class="btn-spin-sm light" *ngIf="reviewSending()"></span>
+          <ng-container *ngIf="!reviewSending()">Envoyer mon avis</ng-container>
+        </button>
+        <button class="sheet-skip" (click)="dismissReview()">Plus tard</button>
+      </ng-container>
+      <div class="sheet-success" *ngIf="reviewSent()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Merci pour votre avis !
+      </div>
     </div>
   </div>
 

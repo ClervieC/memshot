@@ -147,6 +147,58 @@
     </div>
   </main>
 
+  <!-- Support chat FAB -->
+  <button class="support-fab" (click)="openSupport()" *ngIf="!showSupport()" title="Contacter le support">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+
+  <!-- Support chat drawer -->
+  <div class="support-drawer" *ngIf="showSupport()">
+    <div class="support-hdr">
+      <div class="support-hdr-left">
+        <div class="support-avatar">
+          <div class="dot"></div>
+        </div>
+        <div>
+          <div class="support-name">Support Memshot</div>
+          <div class="support-sub">Nous répondons dès que possible</div>
+        </div>
+      </div>
+      <button class="support-close" (click)="showSupport.set(false)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="support-body" #chatBody>
+      <div class="support-empty" *ngIf="!supportMessages().length">
+        <p>Bonjour ! Comment pouvons-nous vous aider ?</p>
+      </div>
+      <div *ngFor="let msg of supportMessages()"
+        class="chat-bubble" [class.mine]="isMine(msg)">
+        <div class="bubble-text">{{ msg.content }}</div>
+        <div class="bubble-time">{{ msg.created_at | date:'HH:mm' }}</div>
+      </div>
+    </div>
+
+    <div class="support-input-row">
+      <textarea class="support-textarea" [(ngModel)]="supportInput"
+        placeholder="Votre message…"
+        rows="1"
+        (keydown.enter)="$event.preventDefault(); sendSupport()">
+      </textarea>
+      <button class="support-send" (click)="sendSupport()" [disabled]="!supportInput.trim() || supportSending()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
   <!-- Help modal -->
   <div class="help-backdrop" *ngIf="showHelp()" (click)="showHelp.set(false)">
     <div class="help-sheet" (click)="$event.stopPropagation()">

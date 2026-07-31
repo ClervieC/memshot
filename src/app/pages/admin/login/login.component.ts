@@ -20,6 +20,8 @@ export class LoginComponent implements OnInit {
   loading = signal(false);
   error = signal('');
   resetSent = signal(false);
+  registerSuccess = signal(false);
+  registeredEmail = signal('');
 
   router = inject(Router);
   private authService = inject(AuthService);
@@ -44,10 +46,13 @@ export class LoginComponent implements OnInit {
     try {
       if (this.mode() === 'login') {
         await this.authService.login(this.email, this.password);
+        const dest = this.authService.isSuperAdmin() ? '/admin/superadmin' : '/admin/dashboard';
+        this.router.navigate([dest]);
       } else {
         await this.authService.register(this.email, this.password);
+        this.registeredEmail.set(this.email);
+        this.registerSuccess.set(true);
       }
-      this.router.navigate(['/admin/dashboard']);
     } catch (e: any) {
       const msg = e.code === 'invalid_credentials' ? this.translate.instant('LOGIN.ERROR_INVALID_CREDENTIAL') :
                   e.code === 'user_already_exists' ? this.translate.instant('LOGIN.ERROR_EMAIL_ALREADY_IN_USE') :
