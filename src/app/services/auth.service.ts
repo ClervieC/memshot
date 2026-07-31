@@ -3,9 +3,14 @@ import { Observable } from 'rxjs';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../core/supabase.client';
 
+export const SUPERADMIN_IDS = new Set([
+  '83104e18-b209-412a-adeb-19af2457833f',
+  'e6953387-7b43-43e0-ab18-22b7cc07de2c',
+]);
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  currentUser$: Observable<User | null> = new Observable(observer => {
+  currentUser$: Observable<User | null> = new Observable((observer) => {
     supabase.auth.getSession().then(({ data }) => observer.next(data.session?.user ?? null));
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       observer.next(session?.user ?? null);
@@ -16,19 +21,23 @@ export class AuthService {
   private currentUser: User | null = null;
 
   constructor() {
-    supabase.auth.onAuthStateChange((_event, session) => this.currentUser = session?.user ?? null);
+    supabase.auth.onAuthStateChange(
+      (_event, session) => (this.currentUser = session?.user ?? null),
+    );
   }
 
   async initialize(): Promise<void> {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     this.currentUser = session?.user ?? null;
     if (!session) {
-      const hasEvent = Object.keys(localStorage).some(k => k.startsWith('event_'));
+      const hasEvent = Object.keys(localStorage).some((k) => k.startsWith('event_'));
       if (hasEvent) {
         try {
           const { data } = await supabase.auth.signInAnonymously();
           this.currentUser = data.user;
-        } catch { }
+        } catch {}
       }
     }
   }
@@ -64,7 +73,7 @@ export class AuthService {
   }
 
   isSuperAdmin(): boolean {
-    return this.currentUser?.id === '83104e18-b209-412a-adeb-19af2457833f';
+    return SUPERADMIN_IDS.has(this.currentUser?.id ?? '');
   }
 
   async signInAnonymously() {
@@ -72,6 +81,8 @@ export class AuthService {
     try {
       const { data, error } = await supabase.auth.signInAnonymously();
       if (!error) this.currentUser = data.user;
-    } catch { /* anonymous auth not enabled */ }
+    } catch {
+      /* anonymous auth not enabled */
+    }
   }
 }

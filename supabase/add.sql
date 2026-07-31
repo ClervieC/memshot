@@ -84,3 +84,32 @@ USING (organizer_id = auth.uid());
 CREATE POLICY "superadmin_read_support" ON support_messages
 FOR SELECT TO authenticated
 USING (auth.uid() = '83104e18-b209-412a-adeb-19af2457833f');
+
+-- Remplacer les anciennes policies par des nouvelles qui couvrent les deux UUIDs
+
+-- events (si tu avais ces policies)
+DROP POLICY IF EXISTS "superadmin_read_all_events" ON events;
+DROP POLICY IF EXISTS "superadmin_write_all_events" ON events;
+CREATE POLICY "superadmin_read_all_events" ON events FOR SELECT TO authenticated
+USING (auth.uid() IN ('83104e18-b209-412a-adeb-19af2457833f','e6953387-7b43-43e0-ab18-22b7cc07de2c'));
+CREATE POLICY "superadmin_write_all_events" ON events FOR ALL TO authenticated
+USING (auth.uid() IN ('83104e18-b209-412a-adeb-19af2457833f','e6953387-7b43-43e0-ab18-22b7cc07de2c'))
+WITH CHECK (auth.uid() IN ('83104e18-b209-412a-adeb-19af2457833f','e6953387-7b43-43e0-ab18-22b7cc07de2c'));
+
+-- messages
+DROP POLICY IF EXISTS "superadmin_read_messages" ON messages;
+CREATE POLICY "superadmin_read_messages" ON messages FOR SELECT TO authenticated
+USING (auth.uid() IN ('83104e18-b209-412a-adeb-19af2457833f','e6953387-7b43-43e0-ab18-22b7cc07de2c'));
+
+-- reviews
+DROP POLICY IF EXISTS "superadmin_read_reviews" ON reviews;
+CREATE POLICY "superadmin_read_reviews" ON reviews FOR SELECT TO authenticated
+USING (auth.uid() IN ('83104e18-b209-412a-adeb-19af2457833f','e6953387-7b43-43e0-ab18-22b7cc07de2c'));
+
+-- support_messages
+DROP POLICY IF EXISTS "superadmin_insert_support" ON support_messages;
+DROP POLICY IF EXISTS "superadmin_read_support" ON support_messages;
+CREATE POLICY "superadmin_insert_support" ON support_messages FOR INSERT TO authenticated
+WITH CHECK (auth.uid() IN ('83104e18-b209-412a-adeb-19af2457833f','e6953387-7b43-43e0-ab18-22b7cc07de2c'));
+CREATE POLICY "superadmin_read_support" ON support_messages FOR SELECT TO authenticated
+USING (auth.uid() IN ('83104e18-b209-412a-adeb-19af2457833f','e6953387-7b43-43e0-ab18-22b7cc07de2c'));

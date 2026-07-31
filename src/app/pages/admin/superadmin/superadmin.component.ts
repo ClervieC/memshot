@@ -3,9 +3,8 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import type { RealtimeChannel } from '@supabase/supabase-js';
-const SUPERADMIN_ID = '83104e18-b209-412a-adeb-19af2457833f';
 import { EventService } from '../../../services/event.service';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService, SUPERADMIN_IDS } from '../../../services/auth.service';
 import { FeedbackService, Message, Review, UserProfile, SupportMessage } from '../../../services/feedback.service';
 import { QrService } from '../../../services/qr.service';
 import { ConfirmService } from '../../../services/confirm.service';
@@ -154,18 +153,19 @@ export class SuperadminComponent implements OnInit, OnDestroy, AfterViewChecked 
   async sendReply() {
     const content = this.supportReply.trim();
     const orgId = this.selectedOrgId();
-    if (!content || !orgId || this.supportSending()) return;
+    const me = this.authService.getCurrentUser();
+    if (!content || !orgId || !me || this.supportSending()) return;
     this.supportSending.set(true);
     this.supportReply = '';
     try {
-      await this.feedbackService.sendSupportMessage(orgId, SUPERADMIN_ID, content);
+      await this.feedbackService.sendSupportMessage(orgId, me.id, content);
       await this.loadAllSupport();
     } catch { }
     this.supportSending.set(false);
   }
 
   isSuperAdminMsg(msg: SupportMessage): boolean {
-    return msg.sender_id === SUPERADMIN_ID;
+    return SUPERADMIN_IDS.has(msg.sender_id);
   }
 
   orgEmail(orgId: string): string {
