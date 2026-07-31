@@ -538,32 +538,22 @@
     .lb-btn-cover { background: rgba(200,169,122,0.25); border-color: rgba(200,169,122,0.5); color: #c8a97a; }
     .lb-btn-cover:hover { background: rgba(200,169,122,0.35); }
 
-    /* ── Bottom sheets (contact + review) ──────────────────── */
     .sheet-backdrop {
       position: fixed; inset: 0; z-index: 200;
       background: rgba(29,28,24,0.45); backdrop-filter: blur(6px);
       display: flex; align-items: flex-end; justify-content: center;
       animation: fadeIn 0.2s ease;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
     .bottom-sheet {
-      background: var(--surface, #faf8f4);
-      border-radius: 24px 24px 0 0;
+      background: var(--surface, #faf8f4); border-radius: 24px 24px 0 0;
       width: 100%; max-width: 480px;
       padding: 1.5rem 1.5rem max(2rem, calc(1rem + env(safe-area-inset-bottom)));
       animation: sheetUp 0.28s cubic-bezier(0.32,0.72,0,1);
     }
     @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-    .sheet-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 1.25rem;
-    }
-    .sheet-header h2 {
-      margin: 0; font-family: 'Fraunces', serif;
-      font-size: 1.3rem; font-weight: 300; color: var(--text);
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .sheet-header h2 { margin: 0; font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 300; color: var(--text); }
     .sheet-close {
       width: 32px; height: 32px; border-radius: 50%;
       border: 1px solid rgba(29,28,24,0.12); background: rgba(29,28,24,0.05);
@@ -571,61 +561,32 @@
       color: rgba(29,28,24,0.5); cursor: pointer;
     }
     .sheet-close svg { width: 14px; height: 14px; }
-
     .sheet-field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
-    .sheet-field label {
-      font-size: 0.75rem; color: var(--text-muted-soft);
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
+    .sheet-field label { font-size: 0.75rem; color: var(--text-muted-soft); text-transform: uppercase; letter-spacing: 0.05em; }
     .sheet-field input, .sheet-field textarea {
-      background: #ffffff; border: 1px solid rgba(29,28,24,0.12); border-radius: 10px;
-      padding: 0.75rem 1rem; color: var(--text);
-      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
-      outline: none; transition: border-color 0.2s; box-sizing: border-box; width: 100%;
-      resize: vertical;
+      background: #fff; border: 1px solid rgba(29,28,24,0.12); border-radius: 10px;
+      padding: 0.75rem 1rem; color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; outline: none; transition: border-color 0.2s; box-sizing: border-box; width: 100%; resize: vertical;
     }
     .sheet-field input:focus, .sheet-field textarea:focus { border-color: rgba(29,28,24,0.25); }
     .sheet-field textarea { min-height: 90px; }
-
     .sheet-btn {
       width: 100%; background: rgba(29,28,24,0.88); color: #fff; border: none;
-      padding: 0.875rem; border-radius: 100px;
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
-      cursor: pointer; transition: all 0.2s;
+      padding: 0.875rem; border-radius: 100px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
       display: flex; align-items: center; justify-content: center; min-height: 50px;
     }
     .sheet-btn:hover:not(:disabled) { background: rgba(29,28,24,1); }
     .sheet-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .sheet-skip {
-      width: 100%; background: transparent; border: none; color: var(--text-muted);
-      padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
-      cursor: pointer; margin-top: 0.5rem;
-    }
-
-    .sheet-success {
-      display: flex; align-items: center; justify-content: center;
-      gap: 0.5rem; padding: 1.5rem; color: #3a7a4e;
-      font-size: 1rem; font-weight: 500;
-    }
+    .sheet-skip { width: 100%; background: transparent; border: none; color: var(--text-muted); padding: 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; margin-top: 0.5rem; }
+    .sheet-success { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 1.5rem; color: #3a7a4e; font-size: 1rem; font-weight: 500; }
     .sheet-success svg { width: 20px; height: 20px; }
-
-    /* Review stars */
     .review-hint { color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1.25rem; }
-
-    .star-row {
-      display: flex; gap: 0.5rem; justify-content: center;
-      margin-bottom: 1.25rem;
-    }
-    .star-btn {
-      background: none; border: none; cursor: pointer;
-      padding: 0.25rem; transition: transform 0.15s;
-    }
+    .star-row { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.25rem; }
+    .star-btn { background: none; border: none; cursor: pointer; padding: 0.25rem; transition: transform 0.15s; }
     .star-btn:hover { transform: scale(1.15); }
     .star-btn svg { width: 36px; height: 36px; display: block; }
-
     .review-sheet { max-height: 90dvh; overflow-y: auto; }
-
     @media (min-width: 480px) {
       .bottom-sheet { border-radius: 24px; margin-bottom: 2rem; }
       .sheet-backdrop { align-items: center; }
